@@ -1,0 +1,14 @@
+# Python Virtual Environment
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# App Data
+*.db
+*.log
+_uploaded_log.adi

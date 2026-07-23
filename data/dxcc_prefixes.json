@@ -1,0 +1,2045 @@
+[
+  {
+    "prefix": "3B8",
+    "id": 1,
+    "name": "Mauritius",
+    "continent": "AF",
+    "cq_zone": 39,
+    "itu_zone": 53,
+    "flag": "🇲🇺"
+  },
+  {
+    "prefix": "3B9",
+    "id": 2,
+    "name": "Rodrigues Island",
+    "continent": "AF",
+    "cq_zone": 39,
+    "itu_zone": 53,
+    "flag": "🇲🇺"
+  },
+  {
+    "prefix": "3D2",
+    "id": 3,
+    "name": "Fiji",
+    "continent": "OC",
+    "cq_zone": 32,
+    "itu_zone": 56,
+    "flag": "🇫🇯"
+  },
+  {
+    "prefix": "3DA",
+    "id": 4,
+    "name": "Eswatini",
+    "continent": "AF",
+    "cq_zone": 38,
+    "itu_zone": 57,
+    "flag": "🇸🇿"
+  },
+  {
+    "prefix": "3V",
+    "id": 5,
+    "name": "Tunisia",
+    "continent": "AF",
+    "cq_zone": 33,
+    "itu_zone": 37,
+    "flag": "🇹🇳"
+  },
+  {
+    "prefix": "3W",
+    "id": 6,
+    "name": "Vietnam",
+    "continent": "AS",
+    "cq_zone": 26,
+    "itu_zone": 49,
+    "flag": "🇻🇳"
+  },
+  {
+    "prefix": "4J",
+    "id": 7,
+    "name": "Azerbaijan",
+    "continent": "AS",
+    "cq_zone": 21,
+    "itu_zone": 29,
+    "flag": "🇦🇿"
+  },
+  {
+    "prefix": "4L",
+    "id": 8,
+    "name": "Georgia",
+    "continent": "AS",
+    "cq_zone": 21,
+    "itu_zone": 29,
+    "flag": "🇬🇪"
+  },
+  {
+    "prefix": "4S",
+    "id": 9,
+    "name": "Sri Lanka",
+    "continent": "AS",
+    "cq_zone": 22,
+    "itu_zone": 41,
+    "flag": "🇱🇰"
+  },
+  {
+    "prefix": "4X",
+    "id": 10,
+    "name": "Israel",
+    "continent": "AS",
+    "cq_zone": 20,
+    "itu_zone": 39,
+    "flag": "🇮🇱"
+  },
+  {
+    "prefix": "5B",
+    "id": 11,
+    "name": "Cyprus",
+    "continent": "AS",
+    "cq_zone": 20,
+    "itu_zone": 39,
+    "flag": "🇨🇾"
+  },
+  {
+    "prefix": "5H",
+    "id": 12,
+    "name": "Tanzania",
+    "continent": "AF",
+    "cq_zone": 37,
+    "itu_zone": 53,
+    "flag": "🇹🇿"
+  },
+  {
+    "prefix": "5N",
+    "id": 13,
+    "name": "Nigeria",
+    "continent": "AF",
+    "cq_zone": 35,
+    "itu_zone": 46,
+    "flag": "🇳🇬"
+  },
+  {
+    "prefix": "5R",
+    "id": 14,
+    "name": "Madagascar",
+    "continent": "AF",
+    "cq_zone": 39,
+    "itu_zone": 53,
+    "flag": "🇲🇬"
+  },
+  {
+    "prefix": "5T",
+    "id": 15,
+    "name": "Mauritania",
+    "continent": "AF",
+    "cq_zone": 35,
+    "itu_zone": 46,
+    "flag": "🇲🇷"
+  },
+  {
+    "prefix": "5U",
+    "id": 16,
+    "name": "Niger",
+    "continent": "AF",
+    "cq_zone": 35,
+    "itu_zone": 46,
+    "flag": "🇳🇪"
+  },
+  {
+    "prefix": "5V",
+    "id": 17,
+    "name": "Togo",
+    "continent": "AF",
+    "cq_zone": 35,
+    "itu_zone": 46,
+    "flag": "🇹🇬"
+  },
+  {
+    "prefix": "5W",
+    "id": 18,
+    "name": "Samoa",
+    "continent": "OC",
+    "cq_zone": 32,
+    "itu_zone": 62,
+    "flag": "🇼🇸"
+  },
+  {
+    "prefix": "5X",
+    "id": 19,
+    "name": "Uganda",
+    "continent": "AF",
+    "cq_zone": 37,
+    "itu_zone": 48,
+    "flag": "🇺🇬"
+  },
+  {
+    "prefix": "5Z",
+    "id": 20,
+    "name": "Kenya",
+    "continent": "AF",
+    "cq_zone": 37,
+    "itu_zone": 48,
+    "flag": "🇰🇪"
+  },
+  {
+    "prefix": "6W",
+    "id": 21,
+    "name": "Senegal",
+    "continent": "AF",
+    "cq_zone": 35,
+    "itu_zone": 46,
+    "flag": "🇸🇳"
+  },
+  {
+    "prefix": "6Y",
+    "id": 22,
+    "name": "Jamaica",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇯🇲"
+  },
+  {
+    "prefix": "7Q",
+    "id": 23,
+    "name": "Malawi",
+    "continent": "AF",
+    "cq_zone": 37,
+    "itu_zone": 53,
+    "flag": "🇲🇼"
+  },
+  {
+    "prefix": "7X",
+    "id": 24,
+    "name": "Algeria",
+    "continent": "AF",
+    "cq_zone": 33,
+    "itu_zone": 37,
+    "flag": "🇩🇿"
+  },
+  {
+    "prefix": "8P",
+    "id": 25,
+    "name": "Barbados",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇧🇧"
+  },
+  {
+    "prefix": "8Q",
+    "id": 26,
+    "name": "Maldives",
+    "continent": "AS",
+    "cq_zone": 22,
+    "itu_zone": 41,
+    "flag": "🇲🇻"
+  },
+  {
+    "prefix": "9A",
+    "id": 27,
+    "name": "Croatia",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇭🇷"
+  },
+  {
+    "prefix": "9G",
+    "id": 28,
+    "name": "Ghana",
+    "continent": "AF",
+    "cq_zone": 35,
+    "itu_zone": 46,
+    "flag": "🇬🇭"
+  },
+  {
+    "prefix": "9H",
+    "id": 29,
+    "name": "Malta",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇲🇹"
+  },
+  {
+    "prefix": "9J",
+    "id": 30,
+    "name": "Zambia",
+    "continent": "AF",
+    "cq_zone": 36,
+    "itu_zone": 53,
+    "flag": "🇿🇲"
+  },
+  {
+    "prefix": "9K",
+    "id": 31,
+    "name": "Kuwait",
+    "continent": "AS",
+    "cq_zone": 21,
+    "itu_zone": 39,
+    "flag": "🇰🇼"
+  },
+  {
+    "prefix": "9L",
+    "id": 32,
+    "name": "Sierra Leone",
+    "continent": "AF",
+    "cq_zone": 35,
+    "itu_zone": 46,
+    "flag": "🇸🇱"
+  },
+  {
+    "prefix": "9M2",
+    "id": 33,
+    "name": "West Malaysia",
+    "continent": "AS",
+    "cq_zone": 28,
+    "itu_zone": 54,
+    "flag": "🇲🇾"
+  },
+  {
+    "prefix": "9M6",
+    "id": 34,
+    "name": "East Malaysia",
+    "continent": "OC",
+    "cq_zone": 28,
+    "itu_zone": 54,
+    "flag": "🇲🇾"
+  },
+  {
+    "prefix": "9N",
+    "id": 35,
+    "name": "Nepal",
+    "continent": "AS",
+    "cq_zone": 22,
+    "itu_zone": 42,
+    "flag": "🇳🇵"
+  },
+  {
+    "prefix": "9Q",
+    "id": 36,
+    "name": "DR Congo",
+    "continent": "AF",
+    "cq_zone": 36,
+    "itu_zone": 52,
+    "flag": "🇨🇩"
+  },
+  {
+    "prefix": "9V",
+    "id": 37,
+    "name": "Singapore",
+    "continent": "AS",
+    "cq_zone": 28,
+    "itu_zone": 54,
+    "flag": "🇸🇬"
+  },
+  {
+    "prefix": "9X",
+    "id": 38,
+    "name": "Rwanda",
+    "continent": "AF",
+    "cq_zone": 36,
+    "itu_zone": 52,
+    "flag": "🇷🇼"
+  },
+  {
+    "prefix": "A2",
+    "id": 39,
+    "name": "Botswana",
+    "continent": "AF",
+    "cq_zone": 38,
+    "itu_zone": 57,
+    "flag": "🇧🇼"
+  },
+  {
+    "prefix": "A3",
+    "id": 40,
+    "name": "Tonga",
+    "continent": "OC",
+    "cq_zone": 32,
+    "itu_zone": 62,
+    "flag": "🇹🇴"
+  },
+  {
+    "prefix": "A4",
+    "id": 41,
+    "name": "Oman",
+    "continent": "AS",
+    "cq_zone": 21,
+    "itu_zone": 39,
+    "flag": "🇴🇲"
+  },
+  {
+    "prefix": "A6",
+    "id": 42,
+    "name": "United Arab Emirates",
+    "continent": "AS",
+    "cq_zone": 21,
+    "itu_zone": 39,
+    "flag": "🇦🇪"
+  },
+  {
+    "prefix": "A7",
+    "id": 43,
+    "name": "Qatar",
+    "continent": "AS",
+    "cq_zone": 21,
+    "itu_zone": 39,
+    "flag": "🇶🇦"
+  },
+  {
+    "prefix": "A9",
+    "id": 44,
+    "name": "Bahrain",
+    "continent": "AS",
+    "cq_zone": 21,
+    "itu_zone": 39,
+    "flag": "🇧🇭"
+  },
+  {
+    "prefix": "AP",
+    "id": 45,
+    "name": "Pakistan",
+    "continent": "AS",
+    "cq_zone": 21,
+    "itu_zone": 41,
+    "flag": "🇵🇰"
+  },
+  {
+    "prefix": "BV",
+    "id": 46,
+    "name": "Taiwan",
+    "continent": "AS",
+    "cq_zone": 24,
+    "itu_zone": 44,
+    "flag": "🇹🇼"
+  },
+  {
+    "prefix": "BY",
+    "id": 47,
+    "name": "China",
+    "continent": "AS",
+    "cq_zone": 24,
+    "itu_zone": 44,
+    "flag": "🇨🇳"
+  },
+  {
+    "prefix": "C2",
+    "id": 48,
+    "name": "Nauru",
+    "continent": "OC",
+    "cq_zone": 31,
+    "itu_zone": 65,
+    "flag": "🇳🇷"
+  },
+  {
+    "prefix": "C3",
+    "id": 49,
+    "name": "Andorra",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 27,
+    "flag": "🇦🇩"
+  },
+  {
+    "prefix": "C5",
+    "id": 50,
+    "name": "The Gambia",
+    "continent": "AF",
+    "cq_zone": 35,
+    "itu_zone": 46,
+    "flag": "🇬🇲"
+  },
+  {
+    "prefix": "C6",
+    "id": 51,
+    "name": "Bahamas",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇧🇸"
+  },
+  {
+    "prefix": "C9",
+    "id": 52,
+    "name": "Mozambique",
+    "continent": "AF",
+    "cq_zone": 37,
+    "itu_zone": 53,
+    "flag": "🇲🇿"
+  },
+  {
+    "prefix": "CE",
+    "id": 53,
+    "name": "Chile",
+    "continent": "SA",
+    "cq_zone": 12,
+    "itu_zone": 14,
+    "flag": "🇨🇱"
+  },
+  {
+    "prefix": "CM",
+    "id": 54,
+    "name": "Cuba",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇨🇺"
+  },
+  {
+    "prefix": "CN",
+    "id": 55,
+    "name": "Morocco",
+    "continent": "AF",
+    "cq_zone": 33,
+    "itu_zone": 37,
+    "flag": "🇲🇦"
+  },
+  {
+    "prefix": "CP",
+    "id": 56,
+    "name": "Bolivia",
+    "continent": "SA",
+    "cq_zone": 10,
+    "itu_zone": 12,
+    "flag": "🇧🇴"
+  },
+  {
+    "prefix": "CT3",
+    "id": 57,
+    "name": "Madeira",
+    "continent": "AF",
+    "cq_zone": 33,
+    "itu_zone": 36,
+    "flag": "🇵🇹"
+  },
+  {
+    "prefix": "CT",
+    "id": 58,
+    "name": "Portugal",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 37,
+    "flag": "🇵🇹"
+  },
+  {
+    "prefix": "CX",
+    "id": 59,
+    "name": "Uruguay",
+    "continent": "SA",
+    "cq_zone": 13,
+    "itu_zone": 14,
+    "flag": "🇺🇾"
+  },
+  {
+    "prefix": "D2",
+    "id": 60,
+    "name": "Angola",
+    "continent": "AF",
+    "cq_zone": 36,
+    "itu_zone": 52,
+    "flag": "🇦🇴"
+  },
+  {
+    "prefix": "D4",
+    "id": 61,
+    "name": "Cape Verde",
+    "continent": "AF",
+    "cq_zone": 35,
+    "itu_zone": 46,
+    "flag": "🇨🇻"
+  },
+  {
+    "prefix": "DL",
+    "id": 62,
+    "name": "Germany",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 28,
+    "flag": "🇩🇪"
+  },
+  {
+    "prefix": "DU",
+    "id": 63,
+    "name": "Philippines",
+    "continent": "OC",
+    "cq_zone": 27,
+    "itu_zone": 50,
+    "flag": "🇵🇭"
+  },
+  {
+    "prefix": "E5",
+    "id": 64,
+    "name": "Cook Islands",
+    "continent": "OC",
+    "cq_zone": 32,
+    "itu_zone": 62,
+    "flag": "🇨🇰"
+  },
+  {
+    "prefix": "E7",
+    "id": 65,
+    "name": "Bosnia-Herzegovina",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇧🇦"
+  },
+  {
+    "prefix": "EA6",
+    "id": 66,
+    "name": "Balearic Islands",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 37,
+    "flag": "🇪🇸"
+  },
+  {
+    "prefix": "EA8",
+    "id": 67,
+    "name": "Canary Islands",
+    "continent": "AF",
+    "cq_zone": 33,
+    "itu_zone": 36,
+    "flag": "🇪🇸"
+  },
+  {
+    "prefix": "EA9",
+    "id": 68,
+    "name": "Ceuta and Melilla",
+    "continent": "AF",
+    "cq_zone": 33,
+    "itu_zone": 37,
+    "flag": "🇪🇸"
+  },
+  {
+    "prefix": "EA",
+    "id": 69,
+    "name": "Spain",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 37,
+    "flag": "🇪🇸"
+  },
+  {
+    "prefix": "EI",
+    "id": 70,
+    "name": "Ireland",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 27,
+    "flag": "🇮🇪"
+  },
+  {
+    "prefix": "EK",
+    "id": 71,
+    "name": "Armenia",
+    "continent": "AS",
+    "cq_zone": 21,
+    "itu_zone": 29,
+    "flag": "🇦🇲"
+  },
+  {
+    "prefix": "EP",
+    "id": 72,
+    "name": "Iran",
+    "continent": "AS",
+    "cq_zone": 21,
+    "itu_zone": 40,
+    "flag": "🇮🇷"
+  },
+  {
+    "prefix": "ER",
+    "id": 73,
+    "name": "Moldova",
+    "continent": "EU",
+    "cq_zone": 16,
+    "itu_zone": 29,
+    "flag": "🇲🇩"
+  },
+  {
+    "prefix": "ES",
+    "id": 74,
+    "name": "Estonia",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 29,
+    "flag": "🇪🇪"
+  },
+  {
+    "prefix": "ET",
+    "id": 75,
+    "name": "Ethiopia",
+    "continent": "AF",
+    "cq_zone": 37,
+    "itu_zone": 48,
+    "flag": "🇪🇹"
+  },
+  {
+    "prefix": "EU",
+    "id": 76,
+    "name": "Belarus",
+    "continent": "EU",
+    "cq_zone": 16,
+    "itu_zone": 29,
+    "flag": "🇧🇾"
+  },
+  {
+    "prefix": "EX",
+    "id": 77,
+    "name": "Kyrgyzstan",
+    "continent": "AS",
+    "cq_zone": 17,
+    "itu_zone": 30,
+    "flag": "🇰🇬"
+  },
+  {
+    "prefix": "EY",
+    "id": 78,
+    "name": "Tajikistan",
+    "continent": "AS",
+    "cq_zone": 17,
+    "itu_zone": 30,
+    "flag": "🇹🇯"
+  },
+  {
+    "prefix": "EZ",
+    "id": 79,
+    "name": "Turkmenistan",
+    "continent": "AS",
+    "cq_zone": 17,
+    "itu_zone": 30,
+    "flag": "🇹🇲"
+  },
+  {
+    "prefix": "F",
+    "id": 80,
+    "name": "France",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 27,
+    "flag": "🇫🇷"
+  },
+  {
+    "prefix": "FG",
+    "id": 81,
+    "name": "Guadeloupe",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇬🇵"
+  },
+  {
+    "prefix": "FJ",
+    "id": 82,
+    "name": "Saint Barthelemy",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇧🇱"
+  },
+  {
+    "prefix": "FK",
+    "id": 83,
+    "name": "New Caledonia",
+    "continent": "OC",
+    "cq_zone": 32,
+    "itu_zone": 56,
+    "flag": "🇳🇨"
+  },
+  {
+    "prefix": "FM",
+    "id": 84,
+    "name": "Martinique",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇲🇶"
+  },
+  {
+    "prefix": "FO",
+    "id": 85,
+    "name": "French Polynesia",
+    "continent": "OC",
+    "cq_zone": 32,
+    "itu_zone": 63,
+    "flag": "🇵🇫"
+  },
+  {
+    "prefix": "FP",
+    "id": 86,
+    "name": "Saint Pierre and Miquelon",
+    "continent": "NA",
+    "cq_zone": 5,
+    "itu_zone": 9,
+    "flag": "🇵🇲"
+  },
+  {
+    "prefix": "FR",
+    "id": 87,
+    "name": "Reunion Island",
+    "continent": "AF",
+    "cq_zone": 39,
+    "itu_zone": 53,
+    "flag": "🇷🇪"
+  },
+  {
+    "prefix": "FS",
+    "id": 88,
+    "name": "Saint Martin",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇲🇫"
+  },
+  {
+    "prefix": "FT8W",
+    "id": 89,
+    "name": "Crozet Island",
+    "continent": "AF",
+    "cq_zone": 39,
+    "itu_zone": 68,
+    "flag": "🇹🇫"
+  },
+  {
+    "prefix": "FW",
+    "id": 90,
+    "name": "Wallis and Futuna",
+    "continent": "OC",
+    "cq_zone": 32,
+    "itu_zone": 62,
+    "flag": "🇼🇫"
+  },
+  {
+    "prefix": "FY",
+    "id": 91,
+    "name": "French Guiana",
+    "continent": "SA",
+    "cq_zone": 9,
+    "itu_zone": 12,
+    "flag": "🇬🇫"
+  },
+  {
+    "prefix": "G",
+    "id": 92,
+    "name": "England",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 27,
+    "flag": "🇬🇧"
+  },
+  {
+    "prefix": "GD",
+    "id": 93,
+    "name": "Isle of Man",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 27,
+    "flag": "🇮🇲"
+  },
+  {
+    "prefix": "GI",
+    "id": 94,
+    "name": "Northern Ireland",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 27,
+    "flag": "🇬🇧"
+  },
+  {
+    "prefix": "GJ",
+    "id": 95,
+    "name": "Jersey",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 27,
+    "flag": "🇯🇪"
+  },
+  {
+    "prefix": "GM",
+    "id": 96,
+    "name": "Scotland",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 27,
+    "flag": "🇬🇧"
+  },
+  {
+    "prefix": "GU",
+    "id": 97,
+    "name": "Guernsey",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 27,
+    "flag": "🇬🇬"
+  },
+  {
+    "prefix": "GW",
+    "id": 98,
+    "name": "Wales",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 27,
+    "flag": "🇬🇧"
+  },
+  {
+    "prefix": "H4",
+    "id": 99,
+    "name": "Solomon Islands",
+    "continent": "OC",
+    "cq_zone": 28,
+    "itu_zone": 51,
+    "flag": "🇸🇧"
+  },
+  {
+    "prefix": "HA",
+    "id": 100,
+    "name": "Hungary",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇭🇺"
+  },
+  {
+    "prefix": "HB0",
+    "id": 101,
+    "name": "Liechtenstein",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 28,
+    "flag": "🇱🇮"
+  },
+  {
+    "prefix": "HB",
+    "id": 102,
+    "name": "Switzerland",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 28,
+    "flag": "🇨🇭"
+  },
+  {
+    "prefix": "HC8",
+    "id": 103,
+    "name": "Galapagos Islands",
+    "continent": "SA",
+    "cq_zone": 10,
+    "itu_zone": 12,
+    "flag": "🇪🇨"
+  },
+  {
+    "prefix": "HC",
+    "id": 104,
+    "name": "Ecuador",
+    "continent": "SA",
+    "cq_zone": 10,
+    "itu_zone": 12,
+    "flag": "🇪🇨"
+  },
+  {
+    "prefix": "HH",
+    "id": 105,
+    "name": "Haiti",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇭🇹"
+  },
+  {
+    "prefix": "HI",
+    "id": 106,
+    "name": "Dominican Republic",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇩🇴"
+  },
+  {
+    "prefix": "HK0",
+    "id": 107,
+    "name": "San Andres and Providencia",
+    "continent": "NA",
+    "cq_zone": 7,
+    "itu_zone": 11,
+    "flag": "🇨🇴"
+  },
+  {
+    "prefix": "HK",
+    "id": 108,
+    "name": "Colombia",
+    "continent": "SA",
+    "cq_zone": 9,
+    "itu_zone": 12,
+    "flag": "🇨🇴"
+  },
+  {
+    "prefix": "HL",
+    "id": 109,
+    "name": "South Korea",
+    "continent": "AS",
+    "cq_zone": 25,
+    "itu_zone": 44,
+    "flag": "🇰🇷"
+  },
+  {
+    "prefix": "HP",
+    "id": 110,
+    "name": "Panama",
+    "continent": "NA",
+    "cq_zone": 7,
+    "itu_zone": 11,
+    "flag": "🇵🇦"
+  },
+  {
+    "prefix": "HR",
+    "id": 111,
+    "name": "Honduras",
+    "continent": "NA",
+    "cq_zone": 7,
+    "itu_zone": 11,
+    "flag": "🇭🇳"
+  },
+  {
+    "prefix": "HS",
+    "id": 112,
+    "name": "Thailand",
+    "continent": "AS",
+    "cq_zone": 26,
+    "itu_zone": 49,
+    "flag": "🇹🇭"
+  },
+  {
+    "prefix": "HV",
+    "id": 113,
+    "name": "Vatican City",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇻🇦"
+  },
+  {
+    "prefix": "HZ",
+    "id": 114,
+    "name": "Saudi Arabia",
+    "continent": "AS",
+    "cq_zone": 21,
+    "itu_zone": 39,
+    "flag": "🇸🇦"
+  },
+  {
+    "prefix": "I",
+    "id": 115,
+    "name": "Italy",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇮🇹"
+  },
+  {
+    "prefix": "IS0",
+    "id": 116,
+    "name": "Sardinia",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇮🇹"
+  },
+  {
+    "prefix": "J2",
+    "id": 117,
+    "name": "Djibouti",
+    "continent": "AF",
+    "cq_zone": 37,
+    "itu_zone": 48,
+    "flag": "🇩🇯"
+  },
+  {
+    "prefix": "J3",
+    "id": 118,
+    "name": "Grenada",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇬🇩"
+  },
+  {
+    "prefix": "J6",
+    "id": 119,
+    "name": "Saint Lucia",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇱🇨"
+  },
+  {
+    "prefix": "J7",
+    "id": 120,
+    "name": "Dominica",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇩🇲"
+  },
+  {
+    "prefix": "J8",
+    "id": 121,
+    "name": "Saint Vincent",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇻🇨"
+  },
+  {
+    "prefix": "JA",
+    "id": 122,
+    "name": "Japan",
+    "continent": "AS",
+    "cq_zone": 25,
+    "itu_zone": 45,
+    "flag": "🇯🇵"
+  },
+  {
+    "prefix": "JD1",
+    "id": 123,
+    "name": "Ogasawara",
+    "continent": "AS",
+    "cq_zone": 27,
+    "itu_zone": 45,
+    "flag": "🇯🇵"
+  },
+  {
+    "prefix": "JT",
+    "id": 124,
+    "name": "Mongolia",
+    "continent": "AS",
+    "cq_zone": 23,
+    "itu_zone": 32,
+    "flag": "🇲🇳"
+  },
+  {
+    "prefix": "JW",
+    "id": 125,
+    "name": "Svalbard",
+    "continent": "EU",
+    "cq_zone": 40,
+    "itu_zone": 18,
+    "flag": "🇸🇯"
+  },
+  {
+    "prefix": "JX",
+    "id": 126,
+    "name": "Jan Mayen",
+    "continent": "EU",
+    "cq_zone": 40,
+    "itu_zone": 18,
+    "flag": "🇳🇴"
+  },
+  {
+    "prefix": "JY",
+    "id": 127,
+    "name": "Jordan",
+    "continent": "AS",
+    "cq_zone": 20,
+    "itu_zone": 39,
+    "flag": "🇯🇴"
+  },
+  {
+    "prefix": "K",
+    "id": 128,
+    "name": "United States",
+    "continent": "NA",
+    "cq_zone": 3,
+    "itu_zone": 6,
+    "flag": "🇺🇸"
+  },
+  {
+    "prefix": "KH2",
+    "id": 129,
+    "name": "Guam",
+    "continent": "OC",
+    "cq_zone": 27,
+    "itu_zone": 64,
+    "flag": "🇬🇺"
+  },
+  {
+    "prefix": "KH6",
+    "id": 130,
+    "name": "Hawaii",
+    "continent": "OC",
+    "cq_zone": 31,
+    "itu_zone": 61,
+    "flag": "🇺🇸"
+  },
+  {
+    "prefix": "KL",
+    "id": 131,
+    "name": "Alaska",
+    "continent": "NA",
+    "cq_zone": 1,
+    "itu_zone": 1,
+    "flag": "🇺🇸"
+  },
+  {
+    "prefix": "KP2",
+    "id": 132,
+    "name": "US Virgin Islands",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇻🇮"
+  },
+  {
+    "prefix": "KP4",
+    "id": 133,
+    "name": "Puerto Rico",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇵🇷"
+  },
+  {
+    "prefix": "LA",
+    "id": 134,
+    "name": "Norway",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 18,
+    "flag": "🇳🇴"
+  },
+  {
+    "prefix": "LU",
+    "id": 135,
+    "name": "Argentina",
+    "continent": "SA",
+    "cq_zone": 13,
+    "itu_zone": 14,
+    "flag": "🇦🇷"
+  },
+  {
+    "prefix": "LX",
+    "id": 136,
+    "name": "Luxembourg",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 27,
+    "flag": "🇱🇺"
+  },
+  {
+    "prefix": "LY",
+    "id": 137,
+    "name": "Lithuania",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 29,
+    "flag": "🇱🇹"
+  },
+  {
+    "prefix": "LZ",
+    "id": 138,
+    "name": "Bulgaria",
+    "continent": "EU",
+    "cq_zone": 20,
+    "itu_zone": 28,
+    "flag": "🇧🇬"
+  },
+  {
+    "prefix": "OA",
+    "id": 139,
+    "name": "Peru",
+    "continent": "SA",
+    "cq_zone": 10,
+    "itu_zone": 12,
+    "flag": "🇵🇪"
+  },
+  {
+    "prefix": "OE",
+    "id": 140,
+    "name": "Austria",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇦🇹"
+  },
+  {
+    "prefix": "OH0",
+    "id": 141,
+    "name": "Aland Islands",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 18,
+    "flag": "🇦🇽"
+  },
+  {
+    "prefix": "OH",
+    "id": 142,
+    "name": "Finland",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 18,
+    "flag": "🇫🇮"
+  },
+  {
+    "prefix": "OK",
+    "id": 143,
+    "name": "Czech Republic",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇨🇿"
+  },
+  {
+    "prefix": "OM",
+    "id": 144,
+    "name": "Slovakia",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇸🇰"
+  },
+  {
+    "prefix": "ON",
+    "id": 145,
+    "name": "Belgium",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 27,
+    "flag": "🇧🇪"
+  },
+  {
+    "prefix": "OX",
+    "id": 146,
+    "name": "Greenland",
+    "continent": "NA",
+    "cq_zone": 40,
+    "itu_zone": 5,
+    "flag": "🇬🇱"
+  },
+  {
+    "prefix": "OY",
+    "id": 147,
+    "name": "Faroe Islands",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 18,
+    "flag": "🇫🇴"
+  },
+  {
+    "prefix": "OZ",
+    "id": 148,
+    "name": "Denmark",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 18,
+    "flag": "🇩🇰"
+  },
+  {
+    "prefix": "P4",
+    "id": 149,
+    "name": "Aruba",
+    "continent": "SA",
+    "cq_zone": 9,
+    "itu_zone": 11,
+    "flag": "🇦🇼"
+  },
+  {
+    "prefix": "PA",
+    "id": 150,
+    "name": "Netherlands",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 27,
+    "flag": "🇳🇱"
+  },
+  {
+    "prefix": "PJ2",
+    "id": 151,
+    "name": "Curacao",
+    "continent": "SA",
+    "cq_zone": 9,
+    "itu_zone": 11,
+    "flag": "🇨🇼"
+  },
+  {
+    "prefix": "PJ4",
+    "id": 152,
+    "name": "Bonaire",
+    "continent": "SA",
+    "cq_zone": 9,
+    "itu_zone": 11,
+    "flag": "🇧🇶"
+  },
+  {
+    "prefix": "PJ5",
+    "id": 153,
+    "name": "Saba and St Eustatius",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇧🇶"
+  },
+  {
+    "prefix": "PJ7",
+    "id": 154,
+    "name": "Sint Maarten",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇸🇽"
+  },
+  {
+    "prefix": "PY",
+    "id": 155,
+    "name": "Brazil",
+    "continent": "SA",
+    "cq_zone": 11,
+    "itu_zone": 15,
+    "flag": "🇧🇷"
+  },
+  {
+    "prefix": "PZ",
+    "id": 156,
+    "name": "Suriname",
+    "continent": "SA",
+    "cq_zone": 9,
+    "itu_zone": 12,
+    "flag": "🇸🇷"
+  },
+  {
+    "prefix": "S5",
+    "id": 157,
+    "name": "Slovenia",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇸🇮"
+  },
+  {
+    "prefix": "S7",
+    "id": 158,
+    "name": "Seychelles",
+    "continent": "AF",
+    "cq_zone": 39,
+    "itu_zone": 53,
+    "flag": "🇸🇨"
+  },
+  {
+    "prefix": "SM",
+    "id": 159,
+    "name": "Sweden",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 18,
+    "flag": "🇸🇪"
+  },
+  {
+    "prefix": "SP",
+    "id": 160,
+    "name": "Poland",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇵🇱"
+  },
+  {
+    "prefix": "SU",
+    "id": 161,
+    "name": "Egypt",
+    "continent": "AF",
+    "cq_zone": 34,
+    "itu_zone": 38,
+    "flag": "🇪🇬"
+  },
+  {
+    "prefix": "SV",
+    "id": 162,
+    "name": "Greece",
+    "continent": "EU",
+    "cq_zone": 20,
+    "itu_zone": 28,
+    "flag": "🇬🇷"
+  },
+  {
+    "prefix": "T2",
+    "id": 163,
+    "name": "Tuvalu",
+    "continent": "OC",
+    "cq_zone": 31,
+    "itu_zone": 65,
+    "flag": "🇹🇻"
+  },
+  {
+    "prefix": "T7",
+    "id": 164,
+    "name": "San Marino",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇸🇲"
+  },
+  {
+    "prefix": "T8",
+    "id": 165,
+    "name": "Palau",
+    "continent": "OC",
+    "cq_zone": 27,
+    "itu_zone": 64,
+    "flag": "🇵🇼"
+  },
+  {
+    "prefix": "TA",
+    "id": 166,
+    "name": "Turkey",
+    "continent": "AS",
+    "cq_zone": 20,
+    "itu_zone": 39,
+    "flag": "🇹🇷"
+  },
+  {
+    "prefix": "TF",
+    "id": 167,
+    "name": "Iceland",
+    "continent": "EU",
+    "cq_zone": 40,
+    "itu_zone": 17,
+    "flag": "🇮🇸"
+  },
+  {
+    "prefix": "TG",
+    "id": 168,
+    "name": "Guatemala",
+    "continent": "NA",
+    "cq_zone": 7,
+    "itu_zone": 11,
+    "flag": "🇬🇹"
+  },
+  {
+    "prefix": "TI",
+    "id": 169,
+    "name": "Costa Rica",
+    "continent": "NA",
+    "cq_zone": 7,
+    "itu_zone": 11,
+    "flag": "🇨🇷"
+  },
+  {
+    "prefix": "TJ",
+    "id": 170,
+    "name": "Cameroon",
+    "continent": "AF",
+    "cq_zone": 36,
+    "itu_zone": 47,
+    "flag": "🇨🇲"
+  },
+  {
+    "prefix": "TK",
+    "id": 171,
+    "name": "Corsica",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇫🇷"
+  },
+  {
+    "prefix": "TL",
+    "id": 172,
+    "name": "Central African Republic",
+    "continent": "AF",
+    "cq_zone": 36,
+    "itu_zone": 47,
+    "flag": "🇨🇫"
+  },
+  {
+    "prefix": "TN",
+    "id": 173,
+    "name": "Republic of the Congo",
+    "continent": "AF",
+    "cq_zone": 36,
+    "itu_zone": 52,
+    "flag": "🇨🇬"
+  },
+  {
+    "prefix": "TR",
+    "id": 174,
+    "name": "Gabon",
+    "continent": "AF",
+    "cq_zone": 36,
+    "itu_zone": 52,
+    "flag": "🇬🇦"
+  },
+  {
+    "prefix": "TT",
+    "id": 175,
+    "name": "Chad",
+    "continent": "AF",
+    "cq_zone": 36,
+    "itu_zone": 47,
+    "flag": "🇹🇩"
+  },
+  {
+    "prefix": "TU",
+    "id": 176,
+    "name": "Cote d'Ivoire",
+    "continent": "AF",
+    "cq_zone": 35,
+    "itu_zone": 46,
+    "flag": "🇨🇮"
+  },
+  {
+    "prefix": "TY",
+    "id": 177,
+    "name": "Benin",
+    "continent": "AF",
+    "cq_zone": 35,
+    "itu_zone": 46,
+    "flag": "🇧🇯"
+  },
+  {
+    "prefix": "TZ",
+    "id": 178,
+    "name": "Mali",
+    "continent": "AF",
+    "cq_zone": 35,
+    "itu_zone": 46,
+    "flag": "🇲🇱"
+  },
+  {
+    "prefix": "UA9",
+    "id": 179,
+    "name": "Asiatic Russia",
+    "continent": "AS",
+    "cq_zone": 17,
+    "itu_zone": 30,
+    "flag": "🇷🇺"
+  },
+  {
+    "prefix": "UA",
+    "id": 180,
+    "name": "European Russia",
+    "continent": "EU",
+    "cq_zone": 16,
+    "itu_zone": 29,
+    "flag": "🇷🇺"
+  },
+  {
+    "prefix": "UK",
+    "id": 181,
+    "name": "Uzbekistan",
+    "continent": "AS",
+    "cq_zone": 17,
+    "itu_zone": 30,
+    "flag": "🇺🇿"
+  },
+  {
+    "prefix": "UN",
+    "id": 182,
+    "name": "Kazakhstan",
+    "continent": "AS",
+    "cq_zone": 17,
+    "itu_zone": 30,
+    "flag": "🇰🇿"
+  },
+  {
+    "prefix": "UR",
+    "id": 183,
+    "name": "Ukraine",
+    "continent": "EU",
+    "cq_zone": 16,
+    "itu_zone": 29,
+    "flag": "🇺🇦"
+  },
+  {
+    "prefix": "V2",
+    "id": 184,
+    "name": "Antigua and Barbuda",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇦🇬"
+  },
+  {
+    "prefix": "V3",
+    "id": 185,
+    "name": "Belize",
+    "continent": "NA",
+    "cq_zone": 7,
+    "itu_zone": 11,
+    "flag": "🇧🇿"
+  },
+  {
+    "prefix": "V4",
+    "id": 186,
+    "name": "Saint Kitts and Nevis",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇰🇳"
+  },
+  {
+    "prefix": "V5",
+    "id": 187,
+    "name": "Namibia",
+    "continent": "AF",
+    "cq_zone": 38,
+    "itu_zone": 57,
+    "flag": "🇳🇦"
+  },
+  {
+    "prefix": "V6",
+    "id": 188,
+    "name": "Micronesia",
+    "continent": "OC",
+    "cq_zone": 27,
+    "itu_zone": 65,
+    "flag": "🇫🇲"
+  },
+  {
+    "prefix": "V7",
+    "id": 189,
+    "name": "Marshall Islands",
+    "continent": "OC",
+    "cq_zone": 31,
+    "itu_zone": 65,
+    "flag": "🇲🇭"
+  },
+  {
+    "prefix": "V8",
+    "id": 190,
+    "name": "Brunei",
+    "continent": "OC",
+    "cq_zone": 28,
+    "itu_zone": 54,
+    "flag": "🇧🇳"
+  },
+  {
+    "prefix": "VE",
+    "id": 191,
+    "name": "Canada",
+    "continent": "NA",
+    "cq_zone": 4,
+    "itu_zone": 9,
+    "flag": "🇨🇦"
+  },
+  {
+    "prefix": "VK9X",
+    "id": 192,
+    "name": "Christmas Island",
+    "continent": "OC",
+    "cq_zone": 29,
+    "itu_zone": 54,
+    "flag": "🇨🇽"
+  },
+  {
+    "prefix": "VK9C",
+    "id": 193,
+    "name": "Cocos-Keeling Islands",
+    "continent": "OC",
+    "cq_zone": 29,
+    "itu_zone": 54,
+    "flag": "🇨🇨"
+  },
+  {
+    "prefix": "VK",
+    "id": 194,
+    "name": "Australia",
+    "continent": "OC",
+    "cq_zone": 30,
+    "itu_zone": 55,
+    "flag": "🇦🇺"
+  },
+  {
+    "prefix": "VP2E",
+    "id": 195,
+    "name": "Anguilla",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇦🇮"
+  },
+  {
+    "prefix": "VP2M",
+    "id": 196,
+    "name": "Montserrat",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇲🇸"
+  },
+  {
+    "prefix": "VP2V",
+    "id": 197,
+    "name": "British Virgin Islands",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇻🇬"
+  },
+  {
+    "prefix": "VP5",
+    "id": 198,
+    "name": "Turks and Caicos",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇹🇨"
+  },
+  {
+    "prefix": "VP6",
+    "id": 199,
+    "name": "Pitcairn Island",
+    "continent": "OC",
+    "cq_zone": 32,
+    "itu_zone": 63,
+    "flag": "🇵🇳"
+  },
+  {
+    "prefix": "VP8",
+    "id": 200,
+    "name": "Falkland Islands",
+    "continent": "SA",
+    "cq_zone": 13,
+    "itu_zone": 16,
+    "flag": "🇫🇰"
+  },
+  {
+    "prefix": "VP9",
+    "id": 201,
+    "name": "Bermuda",
+    "continent": "NA",
+    "cq_zone": 5,
+    "itu_zone": 11,
+    "flag": "🇧🇲"
+  },
+  {
+    "prefix": "VR2",
+    "id": 202,
+    "name": "Hong Kong",
+    "continent": "AS",
+    "cq_zone": 24,
+    "itu_zone": 44,
+    "flag": "🇭🇰"
+  },
+  {
+    "prefix": "VU",
+    "id": 203,
+    "name": "India",
+    "continent": "AS",
+    "cq_zone": 22,
+    "itu_zone": 41,
+    "flag": "🇮🇳"
+  },
+  {
+    "prefix": "XE",
+    "id": 204,
+    "name": "Mexico",
+    "continent": "NA",
+    "cq_zone": 6,
+    "itu_zone": 10,
+    "flag": "🇲🇽"
+  },
+  {
+    "prefix": "XT",
+    "id": 205,
+    "name": "Burkina Faso",
+    "continent": "AF",
+    "cq_zone": 35,
+    "itu_zone": 46,
+    "flag": "🇧🇫"
+  },
+  {
+    "prefix": "XU",
+    "id": 206,
+    "name": "Cambodia",
+    "continent": "AS",
+    "cq_zone": 26,
+    "itu_zone": 49,
+    "flag": "🇰🇭"
+  },
+  {
+    "prefix": "XW",
+    "id": 207,
+    "name": "Laos",
+    "continent": "AS",
+    "cq_zone": 26,
+    "itu_zone": 49,
+    "flag": "🇱🇦"
+  },
+  {
+    "prefix": "XX9",
+    "id": 208,
+    "name": "Macao",
+    "continent": "AS",
+    "cq_zone": 24,
+    "itu_zone": 44,
+    "flag": "🇲🇴"
+  },
+  {
+    "prefix": "YB",
+    "id": 209,
+    "name": "Indonesia",
+    "continent": "OC",
+    "cq_zone": 28,
+    "itu_zone": 51,
+    "flag": "🇮🇩"
+  },
+  {
+    "prefix": "YI",
+    "id": 210,
+    "name": "Iraq",
+    "continent": "AS",
+    "cq_zone": 21,
+    "itu_zone": 39,
+    "flag": "🇮🇶"
+  },
+  {
+    "prefix": "YJ",
+    "id": 211,
+    "name": "Vanuatu",
+    "continent": "OC",
+    "cq_zone": 32,
+    "itu_zone": 56,
+    "flag": "🇻🇺"
+  },
+  {
+    "prefix": "YK",
+    "id": 212,
+    "name": "Syria",
+    "continent": "AS",
+    "cq_zone": 20,
+    "itu_zone": 39,
+    "flag": "🇸🇾"
+  },
+  {
+    "prefix": "YL",
+    "id": 213,
+    "name": "Latvia",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 29,
+    "flag": "🇱🇻"
+  },
+  {
+    "prefix": "YN",
+    "id": 214,
+    "name": "Nicaragua",
+    "continent": "NA",
+    "cq_zone": 7,
+    "itu_zone": 11,
+    "flag": "🇳🇮"
+  },
+  {
+    "prefix": "YO",
+    "id": 215,
+    "name": "Romania",
+    "continent": "EU",
+    "cq_zone": 20,
+    "itu_zone": 28,
+    "flag": "🇷🇴"
+  },
+  {
+    "prefix": "YU",
+    "id": 216,
+    "name": "Serbia",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇷🇸"
+  },
+  {
+    "prefix": "YV",
+    "id": 217,
+    "name": "Venezuela",
+    "continent": "SA",
+    "cq_zone": 9,
+    "itu_zone": 12,
+    "flag": "🇻🇪"
+  },
+  {
+    "prefix": "Z2",
+    "id": 218,
+    "name": "Zimbabwe",
+    "continent": "AF",
+    "cq_zone": 38,
+    "itu_zone": 53,
+    "flag": "🇿🇼"
+  },
+  {
+    "prefix": "Z3",
+    "id": 219,
+    "name": "North Macedonia",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇲🇰"
+  },
+  {
+    "prefix": "ZA",
+    "id": 220,
+    "name": "Albania",
+    "continent": "EU",
+    "cq_zone": 15,
+    "itu_zone": 28,
+    "flag": "🇦🇱"
+  },
+  {
+    "prefix": "ZB2",
+    "id": 221,
+    "name": "Gibraltar",
+    "continent": "EU",
+    "cq_zone": 14,
+    "itu_zone": 37,
+    "flag": "🇬🇮"
+  },
+  {
+    "prefix": "ZD7",
+    "id": 222,
+    "name": "Saint Helena",
+    "continent": "AF",
+    "cq_zone": 36,
+    "itu_zone": 66,
+    "flag": "🇸🇭"
+  },
+  {
+    "prefix": "ZD8",
+    "id": 223,
+    "name": "Ascension Island",
+    "continent": "AF",
+    "cq_zone": 36,
+    "itu_zone": 66,
+    "flag": "🇦🇨"
+  },
+  {
+    "prefix": "ZF",
+    "id": 224,
+    "name": "Cayman Islands",
+    "continent": "NA",
+    "cq_zone": 8,
+    "itu_zone": 11,
+    "flag": "🇰🇾"
+  },
+  {
+    "prefix": "ZL",
+    "id": 225,
+    "name": "New Zealand",
+    "continent": "OC",
+    "cq_zone": 32,
+    "itu_zone": 60,
+    "flag": "🇳🇿"
+  },
+  {
+    "prefix": "ZP",
+    "id": 226,
+    "name": "Paraguay",
+    "continent": "SA",
+    "cq_zone": 11,
+    "itu_zone": 14,
+    "flag": "🇵🇾"
+  },
+  {
+    "prefix": "ZS",
+    "id": 227,
+    "name": "South Africa",
+    "continent": "AF",
+    "cq_zone": 38,
+    "itu_zone": 57,
+    "flag": "🇿🇦"
+  }
+]

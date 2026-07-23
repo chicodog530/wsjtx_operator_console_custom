@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>WSJT-X Operator Console — Start Here</title>
+<style>
+body{font-family:Segoe UI,Arial,sans-serif;max-width:900px;margin:40px auto;padding:0 22px;line-height:1.55;color:#17242b}
+h1{color:#075a7a}h2{margin-top:34px;border-bottom:2px solid #d5e6ed;padding-bottom:6px}
+.step{background:#f3f8fa;border-left:5px solid #1484aa;padding:14px 18px;margin:16px 0}
+code{background:#e9f0f3;padding:2px 5px;border-radius:4px}.warn{background:#fff6dd;border-left-color:#d79b00}
+.ok{background:#edf9f1;border-left-color:#2d9b58}table{border-collapse:collapse;width:100%}td,th{border:1px solid #cbd9df;padding:8px;text-align:left}
+</style>
+</head>
+<body>
+<h1>WSJT-X Operator Console 1.1</h1>
+<p>This guide assumes you are comfortable using WSJT-X but are not a computer technician. Follow the steps in order. You do not need to edit program files.</p>
+
+<h2>1. What this program does</h2>
+<p>Operator Console is a companion for WSJT-X. WSJT-X still handles receiving, decoding, and transmitting. Operator Console reads information from WSJT-X and presents it in a larger browser dashboard with a waterfall, maps, logbook information, and station recommendations.</p>
+
+<h2>2. Before starting</h2>
+<div class="step">
+<strong>You need:</strong>
+<ul>
+<li>Windows 10 or Windows 11</li>
+<li>WSJT-X already installed and working</li>
+<li>Python 3 installed from python.org, with <strong>Add Python to PATH</strong> checked during installation</li>
+<li>Your radio and WSJT-X audio already working normally</li>
+</ul>
+</div>
+
+<h2>3. Tell WSJT-X where to send its data</h2>
+<div class="step">
+<ol>
+<li>Open WSJT-X.</li>
+<li>Click <strong>File</strong>, then <strong>Settings</strong>.</li>
+<li>Click the <strong>Reporting</strong> tab.</li>
+<li>Find the UDP Server section.</li>
+<li>Set <strong>UDP Server</strong> to <code>127.0.0.1</code>.</li>
+<li>Set <strong>UDP Server port number</strong> to <code>2237</code>.</li>
+<li>Check <strong>Accept UDP requests</strong>.</li>
+<li>Click <strong>OK</strong>.</li>
+</ol>
+</div>
+<div class="step warn"><strong>Using JTAlert or another WSJT-X companion?</strong><br>
+Only one program may receive WSJT-X UDP data directly on the same port. If you already use a UDP forwarding or multicast arrangement, keep that arrangement and configure Operator Console to receive the forwarded packets. Do not randomly change ports unless you know where the other program forwards them.</div>
+
+<h2>4. Start Operator Console</h2>
+<div class="step">
+<ol>
+<li>Extract the entire ZIP file into a normal folder. Do not run it from inside the ZIP.</li>
+<li>Double-click <code>run_windows.bat</code>.</li>
+<li>The first start may take several minutes while Python installs the required components.</li>
+<li>Leave the black command window open while using the program.</li>
+<li>Your browser should open automatically. If it does not, open <code>http://127.0.0.1:8080</code>.</li>
+</ol>
+</div>
+
+<h2>5. Enter your station information</h2>
+<div class="step">
+<ol>
+<li>Click <strong>Settings</strong> at the top of the page.</li>
+<li>Enter your amateur radio callsign.</li>
+<li>Enter your Maidenhead grid, such as <code>EM27</code>.</li>
+<li>Choose miles or kilometers.</li>
+<li>Click the button to save settings.</li>
+</ol>
+</div>
+
+<h2>6. Connect your WSJT-X log</h2>
+<p>The normal WSJT-X log is usually here:</p>
+<p><code>C:\Users\YOUR_WINDOWS_NAME\AppData\Local\WSJT-X\wsjtx_log.adi</code></p>
+<div class="step">
+<ol>
+<li>In Operator Console, open <strong>Settings</strong>.</li>
+<li>Paste the complete path into the ADIF path box.</li>
+<li>Do not place quotation marks around the path.</li>
+<li>Save settings.</li>
+</ol>
+</div>
+<p>If you cannot see the AppData folder, press <strong>Windows key + R</strong>, type <code>%LOCALAPPDATA%\WSJT-X</code>, and press Enter.</p>
+
+<h2>7. Start the waterfall</h2>
+<div class="step">
+<ol>
+<li>Return to the Dashboard.</li>
+<li>In the Live Audio Waterfall section, open the audio-device list.</li>
+<li>Select the same radio USB recording device used as the WSJT-X input.</li>
+<li>Press <strong>START WATERFALL</strong>.</li>
+</ol>
+</div>
+<p>The waterfall can use the same input as WSJT-X on most Windows systems. If the device refuses to open, make sure Windows audio “Exclusive Mode” is disabled for that recording device.</p>
+
+
+<h2>8. Adjusting the waterfall</h2>
+<div class="step">
+<ul>
+<li><strong>Speed:</strong> lower it when signals move down the screen too quickly. The 65% default is slower than the original release.</li>
+<li><strong>Zoom:</strong> increase it to spread a smaller frequency range across the screen.</li>
+<li><strong>Pan:</strong> drag the waterfall left or right. You can also hold Shift while using the mouse wheel.</li>
+<li><strong>Mouse wheel:</strong> zooms around the frequency under the pointer.</li>
+<li><strong>Follow RX:</strong> keeps the zoomed display centered on the WSJT-X RX frequency.</li>
+<li><strong>Minimap:</strong> the narrow strip under the waterfall shows the entire 0–4000 Hz passband. Click it to move quickly.</li>
+<li><strong>Detach:</strong> opens the waterfall in a separate resizable window for another monitor.</li>
+<li><strong>Reset View:</strong> returns to the complete 0–4000 Hz display.</li>
+</ul>
+<p>Your waterfall choices are remembered automatically by that browser.</p>
+</div>
+
+<h2>9. What the status lights mean</h2>
+<table>
+<tr><th>Status</th><th>Meaning</th></tr>
+<tr><td>WSJT-X Connected</td><td>UDP packets are arriving from WSJT-X.</td></tr>
+<tr><td>ADIF Monitor</td><td>The WSJT-X log path exists and is being watched.</td></tr>
+<tr><td>PC Clock</td><td>The computer clock is close enough for FT8 timing.</td></tr>
+<tr><td>PSK Reporter</td><td>Online reception reports can be retrieved for your callsign.</td></tr>
+</table>
+
+<h2>10. Common problems</h2>
+<div class="step warn">
+<strong>The page opens but shows no frequency or decodes</strong>
+<ul>
+<li>Confirm WSJT-X is running and actively monitoring.</li>
+<li>Recheck the Reporting settings: <code>127.0.0.1</code> and port <code>2237</code>.</li>
+<li>Close duplicate copies of Operator Console. Only one copy can use port 2237.</li>
+<li>Allow Python through Windows Firewall if prompted.</li>
+</ul>
+</div>
+<div class="step warn">
+<strong>The waterfall is blank</strong>
+<ul>
+<li>Select the correct recording device and press START WATERFALL.</li>
+<li>Confirm WSJT-X itself is receiving audio.</li>
+<li>Turn off Exclusive Mode in Windows Sound device properties.</li>
+</ul>
+</div>
+<div class="step warn">
+<strong>The browser says the address is already in use</strong>
+<ul><li>Another copy is still running. Close its black command window or end the matching Python process in Task Manager.</li></ul>
+</div>
+
+<h2>11. Closing the program</h2>
+<p>Close the black command window that opened with the program. Closing only the browser tab does not stop the program.</p>
+
+<div class="step ok"><strong>Your settings and logbook database survive upgrades.</strong><br>
+They are stored in <code>%LOCALAPPDATA%\WSJTX-Operator-Console</code>, not inside the extracted program folder.</div>
+</body></html>
