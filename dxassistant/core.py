@@ -112,9 +112,29 @@ class DxAssistant:
             self.recent.clear()
             self.best_target = None
             await self.broadcast()
-        elif msg_type == 6:
+                elif msg_type == 6:
             self.status["connected"] = False
             await self.broadcast()
+        elif msg_type in (10, 12) and message.get("logged_adif"):
+            from .adif import parse_adif
+            records = list(parse_adif(message["logged_adif"]))
+            if records:
+                for record in records:
+                    call = record.get("CALL", "").upper()
+                    if not call: continue
+                    entity = self.dxcc.lookup(call)
+                    confirmed = any(record.get(f, "").upper() == "Y" for f in ("QSL_RCVD", "LOTW_QSL_RCVD", "EQSL_QSL_RCVD"))
+                    self.db.execute(
+                        "INSERT INTO qso(call, band, mode, grid, entity_id, confirmed, qso_date, time_on) VALUES (?,?,?,?,?,?,?,?) ON CONFLICT(call, band, mode, qso_date, time_on) DO UPDATE SET grid=excluded.grid, entity_id=excluded.entity_id, confirmed=MAX(qso.confirmed, excluded.confirmed)",
+                        (call, record.get("BAND", ""), record.get("SUBMODE") or record.get("MODE", ""), record.get("GRIDSQUARE", ""), entity.id, int(confirmed), record.get("QSO_DATE", ""), record.get("TIME_ON", ""))
+                    )
+                    new_recent = [r for r in self.recent if r.get("call") != call]
+                    self.recent.clear()
+                    self.recent.extend(new_recent)
+                    if self.best_target and self.best_target.get("call") == call:
+                        self.best_target = None
+                self.db.log_event("INFO", f"Instant logged {len(records)} ADIF records from UDP")
+                await self.broadcast()
 
     def update_status(self, message: dict) -> None:
         for key in (
