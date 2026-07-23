@@ -112,7 +112,7 @@ class DxAssistant:
             self.recent.clear()
             self.best_target = None
             await self.broadcast()
-                elif msg_type == 6:
+        elif msg_type == 6:
             self.status["connected"] = False
             await self.broadcast()
         elif msg_type in (10, 12) and message.get("logged_adif"):
