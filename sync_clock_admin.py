@@ -6,6 +6,7 @@ import socket
 import struct
 import sys
 import time
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -49,6 +50,20 @@ def main() -> int:
     if len(sys.argv) != 3:
         return 2
     server, result_name = sys.argv[1], sys.argv[2]
+
+    # Register the scheduled task to enable silent execution later
+    try:
+        task_name = "WSJTX_Console_TimeSync"
+        python_exe = sys.executable
+        if python_exe.lower().endswith("python.exe"):
+            python_exe = python_exe[:-10] + "pythonw.exe"
+        script_path = Path(__file__).resolve()
+        # Need to properly escape the command string for schtasks
+        command = f'"{python_exe}" "{script_path}" "{server}" "{result_name}"'
+        subprocess.run(["schtasks", "/create", "/f", "/tn", task_name, "/tr", command, "/sc", "ONCE", "/st", "00:00", "/rl", "HIGHEST"], capture_output=True, creationflags=0x08000000)
+    except Exception:
+        pass
+
     result = Path(result_name)
     try:
         target, rtt = ntp_time(server)

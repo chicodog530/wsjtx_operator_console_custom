@@ -35,7 +35,7 @@ class AudioStatus:
     fft_size: int = 4096
     fps: int = 15
     min_hz: int = 0
-    max_hz: int = 4000
+    max_hz: int = 5000
     error: str = IMPORT_ERROR
     sequence: int = 0
     level_db: float = -120.0

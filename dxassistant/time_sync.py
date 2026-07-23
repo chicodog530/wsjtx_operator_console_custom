@@ -77,7 +77,26 @@ async def sync_windows_time() -> tuple[bool, str]:
     except OSError:
         pass
 
+
+    task_name = "WSJTX_Console_TimeSync"
+    
+    # Try silent scheduled task first
+    silent_run = subprocess.run(["schtasks", "/run", "/tn", task_name], capture_output=True, creationflags=0x08000000)
+    
+    if silent_run.returncode == 0:
+        for _ in range(25):
+            await asyncio.sleep(0.2)
+            if result_file.exists():
+                try:
+                    payload = json.loads(result_file.read_text(encoding="utf-8"))
+                    return bool(payload.get("ok")), str(payload.get("message", "Clock synchronized (Silent)"))
+                except Exception:
+                    pass
+        # If we timed out, the task path might be broken. Delete it and fallback to UAC.
+        subprocess.run(["schtasks", "/delete", "/tn", task_name, "/f"], capture_output=True, creationflags=0x08000000)
+
     # ShellExecute with the runas verb creates a UAC prompt for only the helper.
+
     params = subprocess.list2cmdline([str(helper), "time.google.com", str(result_file)])
     rc = ctypes.windll.shell32.ShellExecuteW(
         None, "runas", sys.executable, params, str(root), 0

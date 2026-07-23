@@ -2,6 +2,18 @@
 
 All notable public changes to WSJT-X Operator Console are documented here.
 
+## 1.4.0 — Waterfall Controls & Sync Fix
+
+### Added
+- **Waterfall Zoom Expansion:** You can now zoom the waterfall out to `0.8x` (covering a massive 0–5000 Hz span) for wider band visibility.
+- **Waterfall Drive Slider:** Added a new Drive slider right next to Floor/Ceiling to perfectly dial in the gain/intensity of the waterfall without messing up contrast levels.
+- **True Silent Sync:** The hidden background time sync task now uses a specialized runner to prevent any black console windows from ever flashing on your screen.
+
+## 1.3.0 — Silent Time Sync
+
+### Added
+- **Silent Time Synchronization:** The "Sync Time" feature now automatically registers a hidden Scheduled Task to bypass UAC prompts. You only need to grant Administrator permission the very first time you sync; all subsequent syncs happen instantly in the background without interruptions!
+
 ## 1.2.0 — POTA Integration
 
 ### Added
