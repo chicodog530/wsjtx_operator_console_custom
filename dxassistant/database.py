@@ -58,6 +58,7 @@ CREATE TABLE IF NOT EXISTS qso (
     qso_date TEXT,
     time_on TEXT,
     qrz_synced INTEGER NOT NULL DEFAULT 0,
+    lotw_synced INTEGER NOT NULL DEFAULT 0,
     UNIQUE(call, band, mode, qso_date, time_on)
 );
 
@@ -90,6 +91,10 @@ class Database:
             self.conn.executescript(SCHEMA)
             try:
                 self.conn.execute("ALTER TABLE qso ADD COLUMN qrz_synced INTEGER NOT NULL DEFAULT 0")
+            except sqlite3.OperationalError:
+                pass
+            try:
+                self.conn.execute("ALTER TABLE qso ADD COLUMN lotw_synced INTEGER NOT NULL DEFAULT 0")
             except sqlite3.OperationalError:
                 pass
 

@@ -224,7 +224,8 @@ function renderAwards(s){
   $("topEntities").innerHTML=(s.top_entities||[]).map((e,i)=>`<div class="entity-rank"><strong>${i+1}</strong><div>${e.flag||""} ${esc(e.entity_name)}<div class="muted">${esc(e.continent||"")}</div></div><strong>${e.heard}</strong></div>`).join("");
 }
 function populateSettings(s){if(!s)return;setText("settingsResult","");$("settingsCallsign").value=s.callsign||"";$("settingsGrid").value=s.grid||"";$("settingsUnit").value=s.distance_unit||"mi";$("settingsAdif").value=s.adif_path||"";$("notificationScore").value=s.notification_score??110;$("voiceScore").value=s.voice_score??120;
-  $("ntpServer").value=s.ntp_server||"time.google.com";$("timeWarning").value=s.time_warning_seconds??1.0;$("settingsQrzKey").value=s.qrz_api_key||"";$("settingsQrzAuto").checked=s.qrz_auto_log||false;}
+  $("ntpServer").value=s.ntp_server||"time.google.com";$("timeWarning").value=s.time_warning_seconds??1.0;$("settingsQrzKey").value=s.qrz_api_key||"";$("settingsQrzAuto").checked=s.qrz_auto_log||false;
+  $("settingsLotwPath").value=s.lotw_tqsl_path||"C:\\Program Files (x86)\\TrustedQSL\\tqsl.exe";$("settingsLotwLoc").value=s.lotw_station_location||"";$("settingsLotwPass").value=s.lotw_password||"";$("settingsLotwAuto").checked=s.lotw_auto_log||false;}
 
 function renderPsk(p){
   const rows=p.reports||[];setText('pskCount',rows.length);setText('pskLast',p.last_refresh?p.last_refresh.substring(11,19):'--');
@@ -860,6 +861,17 @@ function wfSelect(e,callNow){
 window.addEventListener("load",()=>{
   setupWaterfall();
   const b=$("openSettingsFirstRun");if(b)b.onclick=()=>document.querySelector('[data-view="settings"]')?.click();
+  $("verifyLotwPath").onclick=async()=>{
+  const path=$("settingsLotwPath").value;
+  setText("lotwVerifyResult","Verifying...");
+  const fd=new FormData();fd.append("path",path);
+  const r=await fetch("/api/settings/verify_tqsl",{method:"POST",body:fd}),data=await r.json();
+  setText("lotwVerifyResult",data.message);
+  $("lotwVerifyResult").style.color=data.ok?"var(--accent)":"red";
+};
+$("openLotwHelp").onclick=()=>$("lotwHelpDialog").showModal();
+document.querySelectorAll(".close-btn").forEach(b=>b.onclick=e=>{const d=e.target.closest("dialog");if(d)d.close();});
+$("aboutButton").onclick=()=>$("aboutDialog").showModal();
   const about=$("aboutDialog"),open=$("aboutButton"),close=$("aboutClose");
   if(open)open.onclick=()=>about.showModal();
   if(close)close.onclick=()=>about.close();

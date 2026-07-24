@@ -87,6 +87,7 @@ class DxAssistant:
             asyncio.create_task(self.monitor_psk_reporter())
         asyncio.create_task(self.broadcast_loop())
         asyncio.create_task(self.monitor_qrz_sync())
+        asyncio.create_task(self.monitor_lotw_sync())
 
     async def stop(self) -> None:
         if self.wsjtx_transport:
@@ -569,6 +570,87 @@ class DxAssistant:
             
             await self.broadcast()
 
+    async def monitor_lotw_sync(self) -> None:
+        import asyncio.subprocess
+        temp_file = self.data_dir / "temp_lotw.adi"
+        while True:
+            await asyncio.sleep(10)
+            if not self.settings.lotw_auto_log or not self.settings.lotw_tqsl_path:
+                continue
+            
+            unsynced = self.db.query("SELECT * FROM qso WHERE lotw_synced = 0 AND qso_date IS NOT NULL LIMIT 10")
+            if not unsynced:
+                continue
+            
+            # Construct a temporary ADIF
+            adif_data = ""
+            for row in unsynced:
+                call = row.get("call", "")
+                if not call:
+                    self.db.execute("UPDATE qso SET lotw_synced = 1 WHERE id = ?", (row["id"],))
+                    continue
+                adif = f"<call:{len(call)}>{call}"
+                if row.get("band"):
+                    band = row["band"]
+                    adif += f"<band:{len(band)}>{band}"
+                if row.get("mode"):
+                    mode = row["mode"]
+                    adif += f"<mode:{len(mode)}>{mode}"
+                if row.get("qso_date"):
+                    qdate = row["qso_date"].replace("-", "")
+                    adif += f"<qso_date:{len(qdate)}>{qdate}"
+                if row.get("time_on"):
+                    ton = row["time_on"].replace(":", "")
+                    adif += f"<time_on:{len(ton)}>{ton}"
+                if row.get("grid"):
+                    grid = row["grid"]
+                    adif += f"<gridsquare:{len(grid)}>{grid}"
+                adif += "<eor>\n"
+                adif_data += adif
+            
+            if not adif_data:
+                continue
+                
+            try:
+                temp_file.write_text(adif_data, encoding="utf-8")
+                
+                cmd = [self.settings.lotw_tqsl_path, "-x", "-d", "-u", "-a", "compliant"]
+                if self.settings.lotw_station_location:
+                    cmd.extend(["-l", self.settings.lotw_station_location])
+                if self.settings.lotw_password:
+                    cmd.extend(["-p", self.settings.lotw_password])
+                cmd.append(str(temp_file))
+                
+                proc = await asyncio.create_subprocess_exec(
+                    *cmd,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE
+                )
+                stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=30.0)
+                
+                if proc.returncode == 0:
+                    for row in unsynced:
+                        if row.get("call"):
+                            self.db.execute("UPDATE qso SET lotw_synced = 1 WHERE id = ?", (row["id"],))
+                    self.db.log_event("INFO", f"LoTW sync successful for {len(unsynced)} QSOs")
+                else:
+                    err = stderr.decode('utf-8', errors='ignore').strip() or stdout.decode('utf-8', errors='ignore').strip()
+                    self.db.log_event("ERROR", f"LoTW sync failed: {err}")
+                    # Mark as synced so we don't get stuck in a loop trying to upload malformed data forever?
+                    # Or keep 0. Let's keep 0 but sleep longer on error.
+                    await asyncio.sleep(60)
+            except Exception as exc:
+                self.db.log_event("ERROR", f"LoTW connection/execution error: {exc}")
+                await asyncio.sleep(60)
+            
+            try:
+                if temp_file.exists():
+                    temp_file.unlink()
+            except OSError:
+                pass
+            
+            await self.broadcast()
+
     def safe_band_advisor(self) -> dict[str, Any]:
         try:
             return self.band_advisor()
@@ -607,6 +689,10 @@ class DxAssistant:
                 "time_warning_seconds": self.settings.time_warning_seconds,
                 "qrz_api_key": self.settings.qrz_api_key,
                 "qrz_auto_log": self.settings.qrz_auto_log,
+                "lotw_auto_log": self.settings.lotw_auto_log,
+                "lotw_tqsl_path": self.settings.lotw_tqsl_path,
+                "lotw_station_location": self.settings.lotw_station_location,
+                "lotw_password": self.settings.lotw_password,
             },
             "radar": self.db.radar(15),
             "band_summary": self.db.band_summary(15),

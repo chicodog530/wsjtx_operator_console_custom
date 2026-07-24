@@ -341,7 +341,17 @@
     <label>Distance unit<select name="distance_unit" id="settingsUnit"><option value="mi">Miles</option><option value="km">Kilometers</option></select></label>
     <label>Automatic ADIF path<input name="adif_path" id="settingsAdif" placeholder="C:\Users\...\wsjtx_log.adi"></label>
     <label>QRZ.com Logbook API Key<input name="qrz_api_key" id="settingsQrzKey" type="password" placeholder="ABCD-1234-5678-9012"></label>
-    <label class="checkbox" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer"><input type="checkbox" name="qrz_auto_log" id="settingsQrzAuto" value="true"> Auto-upload logged QSOs to QRZ.com</label>
+    <label class="checkbox" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;margin-bottom:1rem;"><input type="checkbox" name="qrz_auto_log" id="settingsQrzAuto" value="true"> Auto-upload logged QSOs to QRZ.com</label>
+    
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <label style="margin:0;font-weight:600;font-size:0.9rem;">Logbook of The World (LoTW)</label>
+      <button type="button" id="openLotwHelp" style="padding:2px 8px;font-size:0.8rem;cursor:pointer;">Help (?)</button>
+    </div>
+    <label style="margin-top:0.5rem;">TQSL Executable Path<div style="display:flex;gap:0.5rem;"><input name="lotw_tqsl_path" id="settingsLotwPath" value="C:\Program Files (x86)\TrustedQSL\tqsl.exe" style="flex:1;"><button type="button" id="verifyLotwPath">Verify</button></div><div id="lotwVerifyResult" class="muted"></div></label>
+    <label>Station Location (leave blank for default)<input name="lotw_station_location" id="settingsLotwLoc" placeholder="e.g. Home QTH"></label>
+    <label>Certificate Password (if any)<input name="lotw_password" id="settingsLotwPass" type="password"></label>
+    <label class="checkbox" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;margin-bottom:1rem;"><input type="checkbox" name="lotw_auto_log" id="settingsLotwAuto" value="true"> Auto-upload logged QSOs to LoTW</label>
+    
     <label>Desktop notification score<input name="notification_score" id="notificationScore" type="number" min="0" max="300"></label>
     <label>Voice alert score<input name="voice_score" id="voiceScore" type="number" min="0" max="300"></label>
     <label>NTP time server<input name="ntp_server" id="ntpServer" value="time.google.com"></label>
@@ -351,6 +361,22 @@
 </section>
 </main>
 
+<dialog id="lotwHelpDialog" class="about-dialog">
+  <div class="about-head">
+    <div><div class="eyebrow">HELP</div><h2>LoTW Auto-Logging</h2></div>
+    <button type="button" class="close-btn" onclick="lotwHelpDialog.close()">×</button>
+  </div>
+  <div class="about-body">
+    <p>To use LoTW Auto-Logging, you must have the ARRL <strong>TrustedQSL (TQSL)</strong> application installed on this computer and configured with your active Callsign Certificate.</p>
+    <p><strong>Requirements:</strong></p>
+    <ul>
+      <li><strong>TQSL Executable Path:</strong> The path to the <code>tqsl.exe</code> program on your computer. Usually <code>C:\Program Files (x86)\TrustedQSL\tqsl.exe</code>.</li>
+      <li><strong>Station Location:</strong> If you use multiple locations in TQSL, type the EXACT name of the Station Location you want to use. If you only have one location, you can usually leave this blank.</li>
+      <li><strong>Certificate Password:</strong> If you protected your Callsign Certificate with a password in TQSL, enter it here. Otherwise, leave it blank.</li>
+    </ul>
+    <p><strong>How it works:</strong> The console will silently generate an ADIF file for your new QSOs and pass it to TQSL to sign and upload in the background.</p>
+  </div>
+</dialog>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 <script src="/static/app.js"></script>
