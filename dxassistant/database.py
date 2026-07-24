@@ -42,7 +42,6 @@ CREATE TABLE IF NOT EXISTS decodes (
 CREATE INDEX IF NOT EXISTS idx_decodes_heard_at ON decodes(heard_at DESC);
 CREATE INDEX IF NOT EXISTS idx_decodes_call ON decodes(call);
 CREATE INDEX IF NOT EXISTS idx_decodes_entity_id ON decodes(entity_id);
-CREATE INDEX IF NOT EXISTS idx_qso_entity_id ON qso(entity_id);
 CREATE INDEX IF NOT EXISTS idx_decodes_continent ON decodes(continent);
 CREATE INDEX IF NOT EXISTS idx_decodes_cq_zone ON decodes(cq_zone);
 CREATE INDEX IF NOT EXISTS idx_decodes_itu_zone ON decodes(itu_zone);
@@ -61,6 +60,8 @@ CREATE TABLE IF NOT EXISTS qso (
     lotw_synced INTEGER NOT NULL DEFAULT 0,
     UNIQUE(call, band, mode, qso_date, time_on)
 );
+
+CREATE INDEX IF NOT EXISTS idx_qso_entity_id ON qso(entity_id);
 
 CREATE TABLE IF NOT EXISTS wanted (
     pattern TEXT PRIMARY KEY,
