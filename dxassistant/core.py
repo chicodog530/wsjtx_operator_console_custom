@@ -86,6 +86,7 @@ class DxAssistant:
         if self.settings.psk_reporter_enabled:
             asyncio.create_task(self.monitor_psk_reporter())
         asyncio.create_task(self.broadcast_loop())
+        asyncio.create_task(self.monitor_qrz_sync())
 
     async def stop(self) -> None:
         if self.wsjtx_transport:
@@ -507,6 +508,67 @@ class DxAssistant:
             ),
         }
 
+    async def monitor_qrz_sync(self) -> None:
+        import urllib.request
+        import urllib.parse
+        while True:
+            await asyncio.sleep(10)
+            if not self.settings.qrz_auto_log or not self.settings.qrz_api_key:
+                continue
+            
+            unsynced = self.db.query("SELECT * FROM qso WHERE qrz_synced = 0 AND qso_date IS NOT NULL LIMIT 10")
+            if not unsynced:
+                continue
+            
+            for row in unsynced:
+                call = row.get("call", "")
+                if not call:
+                    self.db.execute("UPDATE qso SET qrz_synced = 1 WHERE id = ?", (row["id"],))
+                    continue
+                
+                adif = f"<call:{len(call)}>{call}"
+                if row.get("band"):
+                    band = row["band"]
+                    adif += f"<band:{len(band)}>{band}"
+                if row.get("mode"):
+                    mode = row["mode"]
+                    adif += f"<mode:{len(mode)}>{mode}"
+                if row.get("qso_date"):
+                    qdate = row["qso_date"].replace("-", "")
+                    adif += f"<qso_date:{len(qdate)}>{qdate}"
+                if row.get("time_on"):
+                    ton = row["time_on"].replace(":", "")
+                    adif += f"<time_on:{len(ton)}>{ton}"
+                if row.get("grid"):
+                    grid = row["grid"]
+                    adif += f"<gridsquare:{len(grid)}>{grid}"
+                adif += "<eor>"
+                
+                data = urllib.parse.urlencode({
+                    "KEY": self.settings.qrz_api_key,
+                    "ACTION": "INSERT",
+                    "ADIF": adif
+                }).encode("utf-8")
+                
+                req = urllib.request.Request("https://logbook.qrz.com/api", data=data)
+                req.add_header("User-Agent", "WSJTX_Operator_Console/1.4.0")
+                
+                try:
+                    loop = asyncio.get_running_loop()
+                    response = await loop.run_in_executor(None, urllib.request.urlopen, req, None, 10.0)
+                    body = response.read().decode("utf-8")
+                    if "RESULT=OK" in body.upper() or "RESULT=REPLACE" in body.upper():
+                        self.db.execute("UPDATE qso SET qrz_synced = 1 WHERE id = ?", (row["id"],))
+                        self.db.log_event("INFO", f"QRZ.com sync successful for {call}")
+                    else:
+                        self.db.log_event("WARNING", f"QRZ upload failed for {call}: {body.strip()}")
+                        self.db.execute("UPDATE qso SET qrz_synced = 1 WHERE id = ?", (row["id"],))
+                except Exception as exc:
+                    self.db.log_event("ERROR", f"QRZ connection error for {call}: {exc}")
+                    await asyncio.sleep(5)
+            
+            await self.broadcast()
+
     def safe_band_advisor(self) -> dict[str, Any]:
         try:
             return self.band_advisor()
@@ -543,6 +605,8 @@ class DxAssistant:
                 "map_tile_url": self.settings.map_tile_url,
                 "ntp_server": self.settings.ntp_server,
                 "time_warning_seconds": self.settings.time_warning_seconds,
+                "qrz_api_key": self.settings.qrz_api_key,
+                "qrz_auto_log": self.settings.qrz_auto_log,
             },
             "radar": self.db.radar(15),
             "band_summary": self.db.band_summary(15),

@@ -340,6 +340,8 @@
     <label>Callsign<input name="callsign" id="settingsCallsign" value=""></label><label>Grid square<input name="grid" id="settingsGrid" value=""></label>
     <label>Distance unit<select name="distance_unit" id="settingsUnit"><option value="mi">Miles</option><option value="km">Kilometers</option></select></label>
     <label>Automatic ADIF path<input name="adif_path" id="settingsAdif" placeholder="C:\Users\...\wsjtx_log.adi"></label>
+    <label>QRZ.com Logbook API Key<input name="qrz_api_key" id="settingsQrzKey" type="password" placeholder="ABCD-1234-5678-9012"></label>
+    <label class="checkbox" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer"><input type="checkbox" name="qrz_auto_log" id="settingsQrzAuto" value="true"> Auto-upload logged QSOs to QRZ.com</label>
     <label>Desktop notification score<input name="notification_score" id="notificationScore" type="number" min="0" max="300"></label>
     <label>Voice alert score<input name="voice_score" id="voiceScore" type="number" min="0" max="300"></label>
     <label>NTP time server<input name="ntp_server" id="ntpServer" value="time.google.com"></label>

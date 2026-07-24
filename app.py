@@ -234,6 +234,8 @@ async def save_settings(
     voice_score: int = Form(120),
     ntp_server: str = Form("time.google.com"),
     time_warning_seconds: float = Form(1.0),
+    qrz_api_key: str = Form(""),
+    qrz_auto_log: bool = Form(False),
 ):
     assistant.settings.callsign = callsign.strip().upper()
     assistant.settings.grid = grid.strip().upper()
@@ -243,6 +245,8 @@ async def save_settings(
     assistant.settings.voice_score = max(0, min(voice_score, 300))
     assistant.settings.ntp_server = ntp_server.strip() or "time.google.com"
     assistant.settings.time_warning_seconds = max(0.1, min(time_warning_seconds, 5.0))
+    assistant.settings.qrz_api_key = qrz_api_key.strip()
+    assistant.settings.qrz_auto_log = qrz_auto_log
     assistant.time_status.server = assistant.settings.ntp_server
     assistant.settings_store.save()
     assistant.status["de_call"] = assistant.settings.callsign

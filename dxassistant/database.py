@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS qso (
     confirmed INTEGER NOT NULL DEFAULT 0,
     qso_date TEXT,
     time_on TEXT,
+    qrz_synced INTEGER NOT NULL DEFAULT 0,
     UNIQUE(call, band, mode, qso_date, time_on)
 );
 
@@ -87,6 +88,10 @@ class Database:
         self._cache_top_time = 0
         with self.conn:
             self.conn.executescript(SCHEMA)
+            try:
+                self.conn.execute("ALTER TABLE qso ADD COLUMN qrz_synced INTEGER NOT NULL DEFAULT 0")
+            except sqlite3.OperationalError:
+                pass
 
     def execute(self, sql: str, params: tuple[Any, ...] = ()) -> sqlite3.Cursor:
         with self.lock, self.conn:

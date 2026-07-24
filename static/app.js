@@ -224,7 +224,7 @@ function renderAwards(s){
   $("topEntities").innerHTML=(s.top_entities||[]).map((e,i)=>`<div class="entity-rank"><strong>${i+1}</strong><div>${e.flag||""} ${esc(e.entity_name)}<div class="muted">${esc(e.continent||"")}</div></div><strong>${e.heard}</strong></div>`).join("");
 }
 function populateSettings(s){if(!s)return;setText("settingsResult","");$("settingsCallsign").value=s.callsign||"";$("settingsGrid").value=s.grid||"";$("settingsUnit").value=s.distance_unit||"mi";$("settingsAdif").value=s.adif_path||"";$("notificationScore").value=s.notification_score??110;$("voiceScore").value=s.voice_score??120;
-  $("ntpServer").value=s.ntp_server||"time.google.com";$("timeWarning").value=s.time_warning_seconds??1.0}
+  $("ntpServer").value=s.ntp_server||"time.google.com";$("timeWarning").value=s.time_warning_seconds??1.0;$("settingsQrzKey").value=s.qrz_api_key||"";$("settingsQrzAuto").checked=s.qrz_auto_log||false;}
 
 function renderPsk(p){
   const rows=p.reports||[];setText('pskCount',rows.length);setText('pskLast',p.last_refresh?p.last_refresh.substring(11,19):'--');
