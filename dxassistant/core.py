@@ -680,6 +680,12 @@ class DxAssistant:
         return {
             "status": self.status,
             "stats": self.db.stats(),
+            "sync_stats": {
+                "qrz_all_time": self.db.scalar("SELECT count(*) FROM qso WHERE qrz_synced = 1"),
+                "qrz_session": getattr(self, 'qrz_session_count', 0),
+                "lotw_all_time": self.db.scalar("SELECT count(*) FROM qso WHERE lotw_synced = 1"),
+                "lotw_session": getattr(self, 'lotw_session_count', 0)
+            },
             "advisor": self.public_row(self.best_target) if self.best_target else None,
             "recent": [self.public_row(row) for row in list(self.recent)[:80]],
             "propagation": self.propagation_summary(),
