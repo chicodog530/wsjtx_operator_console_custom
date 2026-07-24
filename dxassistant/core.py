@@ -41,6 +41,8 @@ class DxAssistant:
         self.wsjtx: WsjtxProtocol | None = None
         self.wsjtx_transport: asyncio.DatagramTransport | None = None
         self.clients: set[Any] = set()
+        self.qrz_session_count = 0
+        self.lotw_session_count = 0
         self.status: dict[str, Any] = {
             "connected": False,
             "last_packet": None,
@@ -560,6 +562,7 @@ class DxAssistant:
                     body = response.read().decode("utf-8")
                     if "RESULT=OK" in body.upper() or "RESULT=REPLACE" in body.upper():
                         self.db.execute("UPDATE qso SET qrz_synced = 1 WHERE id = ?", (row["id"],))
+                        self.qrz_session_count += 1
                         self.db.log_event("INFO", f"QRZ.com sync successful for {call}")
                     else:
                         self.db.log_event("WARNING", f"QRZ upload failed for {call}: {body.strip()}")
@@ -632,6 +635,7 @@ class DxAssistant:
                     for row in unsynced:
                         if row.get("call"):
                             self.db.execute("UPDATE qso SET lotw_synced = 1 WHERE id = ?", (row["id"],))
+                    self.lotw_session_count += len(unsynced)
                     self.db.log_event("INFO", f"LoTW sync successful for {len(unsynced)} QSOs")
                 else:
                     err = stderr.decode('utf-8', errors='ignore').strip() or stdout.decode('utf-8', errors='ignore').strip()

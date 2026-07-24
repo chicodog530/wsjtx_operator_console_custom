@@ -341,7 +341,8 @@
     <label>Distance unit<select name="distance_unit" id="settingsUnit"><option value="mi">Miles</option><option value="km">Kilometers</option></select></label>
     <label>Automatic ADIF path<input name="adif_path" id="settingsAdif" placeholder="C:\Users\...\wsjtx_log.adi"></label>
     <label>QRZ.com Logbook API Key<input name="qrz_api_key" id="settingsQrzKey" type="password" placeholder="ABCD-1234-5678-9012"></label>
-    <label class="checkbox" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;margin-bottom:1rem;"><input type="checkbox" name="qrz_auto_log" id="settingsQrzAuto" value="true"> Auto-upload logged QSOs to QRZ.com</label>
+    <label class="checkbox" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;margin-bottom:0.25rem;"><input type="checkbox" name="qrz_auto_log" id="settingsQrzAuto" value="true"> Auto-upload logged QSOs to QRZ.com</label>
+    <div id="qrzStats" class="muted" style="margin-bottom:1rem; font-size:0.85rem; font-weight: 500;"></div>
     
     <div style="display:flex;align-items:center;justify-content:space-between;">
       <label style="margin:0;font-weight:600;font-size:0.9rem;">Logbook of The World (LoTW)</label>
@@ -350,7 +351,8 @@
     <label style="margin-top:0.5rem;">TQSL Executable Path<div style="display:flex;gap:0.5rem;"><input name="lotw_tqsl_path" id="settingsLotwPath" value="C:\Program Files (x86)\TrustedQSL\tqsl.exe" style="flex:1;"><button type="button" id="verifyLotwPath">Verify</button></div><div id="lotwVerifyResult" class="muted"></div></label>
     <label>Station Location (leave blank for default)<input name="lotw_station_location" id="settingsLotwLoc" placeholder="e.g. Home QTH"></label>
     <label>Certificate Password (if any)<input name="lotw_password" id="settingsLotwPass" type="password"></label>
-    <label class="checkbox" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;margin-bottom:1rem;"><input type="checkbox" name="lotw_auto_log" id="settingsLotwAuto" value="true"> Auto-upload logged QSOs to LoTW</label>
+    <label class="checkbox" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;margin-bottom:0.25rem;"><input type="checkbox" name="lotw_auto_log" id="settingsLotwAuto" value="true"> Auto-upload logged QSOs to LoTW</label>
+    <div id="lotwStats" class="muted" style="margin-bottom:1rem; font-size:0.85rem; font-weight: 500;"></div>
     
     <label>Desktop notification score<input name="notification_score" id="notificationScore" type="number" min="0" max="300"></label>
     <label>Voice alert score<input name="voice_score" id="voiceScore" type="number" min="0" max="300"></label>
@@ -379,7 +381,7 @@
 </dialog>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-<script src="/static/app.js"></script>
+<script src="/static/app.js?v=1.4.2"></script>
 <dialog id="aboutDialog" class="about-dialog">
   <div class="about-head">
     <div><div class="eyebrow">APPLICATION INFORMATION</div><h2>WSJT-X Operator Console 1.1</h2></div>

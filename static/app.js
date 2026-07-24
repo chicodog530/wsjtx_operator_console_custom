@@ -113,6 +113,7 @@ advisorOverride=a;
   const confidence=a?.success_estimate||0;$("confidenceBar").style.width=`${confidence}%`;setText("confidenceText",a?`${confidence}%`:"--");
   $("callButton").disabled=!a||!!s.transmitting;$("callButton").textContent=a?`CALL ${a.call} IN WSJT-X`:"CALL IN WSJT-X";
 
+  if(snapshot.sync_stats){setText("qrzStats", `Successfully synced: ${snapshot.sync_stats.qrz_session} this session / ${snapshot.sync_stats.qrz_all_time} all-time`);setText("lotwStats", `Successfully synced: ${snapshot.sync_stats.lotw_session} this session / ${snapshot.sync_stats.lotw_all_time} all-time`);}
   setText("statDecodes",snapshot.stats.decodes.toLocaleString());setText("statQsos",snapshot.stats.qsos.toLocaleString());setText("statWorked",snapshot.stats.dxcc_worked.toLocaleString());
   setText("statConfirmed",snapshot.stats.dxcc_confirmed.toLocaleString());setText("statWanted",snapshot.stats.wanted.toLocaleString());
   advisorQueue=rankedAdvisors(snapshot).slice(0,5);
