@@ -175,7 +175,46 @@
       <div class="panel-title import-title">Import ADIF</div><form id="adifForm" class="adif-form"><input id="adifFile" type="file" accept=".adi,.adif" required><button>Import log</button></form>
       <div id="importResult" class="muted"></div>
     </article>
+  <section class="panel waterfall-panel">
+    <div class="waterfall-head">
+      <div><div class="panel-title">Live audio waterfall</div><div id="waterfallStatus" class="muted">Select the same USB audio input used by WSJT-X, then start capture</div></div>
+      <div class="waterfall-controls">
+        <select id="audioDevice"><option value="-1">Default audio input</option></select>
+        <button id="refreshAudioDevices">Refresh devices</button>
+        <button id="startWaterfall" class="primary">START WATERFALL</button>
+        <button id="stopWaterfall">Stop</button>
+      </div>
+    </div>
+    <div class="waterfall-toolbar">
+      <label>Speed <input id="waterfallSpeed" type="range" min="10" max="200" step="5" value="65"><span id="waterfallSpeedValue">65%</span></label>
+      <label>Zoom <input id="waterfallZoom" type="range" min="0.8" max="8" step="0.1" value="1"><span id="waterfallZoomValue">1.0×</span></label>
+      <label class="compact-check"><input id="waterfallFollowRx" type="checkbox"> Follow RX</label>
+      <button id="waterfallResetView" type="button">RESET VIEW</button>
+      <button id="waterfallDetach" type="button">DETACH</button>
+      <label>Palette <select id="waterfallPalette"><option value="classic">Classic SDR</option><option value="contrast">High contrast</option><option value="gray">Grayscale</option></select></label>
+      <label>Drive <input id="waterfallDrive" type="range" min="-30" max="30" step="1" value="0"><span id="waterfallDriveValue">0 dB</span></label>
+      <label>Floor <input id="waterfallFloor" type="range" min="-140" max="-70" step="1" value="-120"><span id="waterfallFloorValue">-120 dB</span></label>
+      <label class="compact-check"><input id="waterfallAutoFloor" type="checkbox" checked> Auto floor</label>
+      <label>Ceiling <input id="waterfallCeiling" type="range" min="-90" max="-20" step="1" value="-45"><span id="waterfallCeilingValue">-45 dB</span></label>
+      <label>Averaging <input id="waterfallAverage" type="range" min="0" max="0.95" step="0.05" value="0.55"><span id="waterfallAverageValue">0.55</span></label>
+      <label>Peak hold <input id="waterfallPeakHold" type="range" min="0" max="0.98" step="0.02" value="0.82"><span id="waterfallPeakValue">0.82</span></label>
+      <span id="waterfallViewLabel">0–4000 Hz</span>
+      <span id="audioLevel">-- dBFS</span><span id="audioHealth"></span>
+      <span>Drag: pan · Wheel: zoom · Shift+wheel: pan · Double-click: call</span>
+    </div>
+    <div class="waterfall-wrap">
+      <canvas id="waterfallCanvas" width="1280" height="420"></canvas>
+      <canvas id="waterfallOverlay" width="1280" height="420"></canvas>
+      <div id="waterfallCursor" class="waterfall-cursor"></div>
+      <div id="waterfallCursorLabel" class="waterfall-cursor-label">1500 Hz</div>
+    </div>
+    <div class="waterfall-minimap-wrap">
+      <canvas id="waterfallMinimap" width="1280" height="26"></canvas>
+    </div>
+    <canvas id="waterfallScale" class="waterfall-scale-canvas" width="1280" height="34"></canvas>
+    <div id="waterfallSelection" class="waterfall-selection muted">No signal selected</div>
   </section>
+</section>
 </section>
 
 <section id="view-activity" class="view">
@@ -250,45 +289,6 @@
     <button type="button" id="enableNotifications">Enable desktop notifications</button><button class="primary">Save settings</button><div id="settingsResult" class="muted"></div>
   </form></section>
 </section>
-<section class="panel waterfall-panel">
-    <div class="waterfall-head">
-      <div><div class="panel-title">Live audio waterfall</div><div id="waterfallStatus" class="muted">Select the same USB audio input used by WSJT-X, then start capture</div></div>
-      <div class="waterfall-controls">
-        <select id="audioDevice"><option value="-1">Default audio input</option></select>
-        <button id="refreshAudioDevices">Refresh devices</button>
-        <button id="startWaterfall" class="primary">START WATERFALL</button>
-        <button id="stopWaterfall">Stop</button>
-      </div>
-    </div>
-    <div class="waterfall-toolbar">
-      <label>Speed <input id="waterfallSpeed" type="range" min="10" max="200" step="5" value="65"><span id="waterfallSpeedValue">65%</span></label>
-      <label>Zoom <input id="waterfallZoom" type="range" min="0.8" max="8" step="0.1" value="1"><span id="waterfallZoomValue">1.0×</span></label>
-      <label class="compact-check"><input id="waterfallFollowRx" type="checkbox"> Follow RX</label>
-      <button id="waterfallResetView" type="button">RESET VIEW</button>
-      <button id="waterfallDetach" type="button">DETACH</button>
-      <label>Palette <select id="waterfallPalette"><option value="classic">Classic SDR</option><option value="contrast">High contrast</option><option value="gray">Grayscale</option></select></label>
-      <label>Drive <input id="waterfallDrive" type="range" min="-30" max="30" step="1" value="0"><span id="waterfallDriveValue">0 dB</span></label>
-      <label>Floor <input id="waterfallFloor" type="range" min="-140" max="-70" step="1" value="-120"><span id="waterfallFloorValue">-120 dB</span></label>
-      <label class="compact-check"><input id="waterfallAutoFloor" type="checkbox" checked> Auto floor</label>
-      <label>Ceiling <input id="waterfallCeiling" type="range" min="-90" max="-20" step="1" value="-45"><span id="waterfallCeilingValue">-45 dB</span></label>
-      <label>Averaging <input id="waterfallAverage" type="range" min="0" max="0.95" step="0.05" value="0.55"><span id="waterfallAverageValue">0.55</span></label>
-      <label>Peak hold <input id="waterfallPeakHold" type="range" min="0" max="0.98" step="0.02" value="0.82"><span id="waterfallPeakValue">0.82</span></label>
-      <span id="waterfallViewLabel">0–4000 Hz</span>
-      <span id="audioLevel">-- dBFS</span><span id="audioHealth"></span>
-      <span>Drag: pan · Wheel: zoom · Shift+wheel: pan · Double-click: call</span>
-    </div>
-    <div class="waterfall-wrap">
-      <canvas id="waterfallCanvas" width="1280" height="420"></canvas>
-      <canvas id="waterfallOverlay" width="1280" height="420"></canvas>
-      <div id="waterfallCursor" class="waterfall-cursor"></div>
-      <div id="waterfallCursorLabel" class="waterfall-cursor-label">1500 Hz</div>
-    </div>
-    <div class="waterfall-minimap-wrap">
-      <canvas id="waterfallMinimap" width="1280" height="26"></canvas>
-    </div>
-    <canvas id="waterfallScale" class="waterfall-scale-canvas" width="1280" height="34"></canvas>
-    <div id="waterfallSelection" class="waterfall-selection muted">No signal selected</div>
-  </section>
 
 </main>
 
@@ -310,7 +310,7 @@
 </dialog>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-<script src="/static/app.js?v=1.4.2"></script>
+<script src="/static/app.js?v=1.4.4"></script>
 <dialog id="aboutDialog" class="about-dialog">
   <div class="about-head">
     <div><div class="eyebrow">APPLICATION INFORMATION</div><h2>WSJT-X Operator Console 1.1</h2></div>
