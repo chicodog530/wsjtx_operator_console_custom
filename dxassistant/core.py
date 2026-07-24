@@ -579,8 +579,7 @@ class DxAssistant:
             await self.broadcast()
 
     async def monitor_lotw_sync(self) -> None:
-        import asyncio
-import socket.subprocess
+        import asyncio.subprocess
         temp_file = self.user_data_dir / "temp_lotw.adi"
         while True:
             await asyncio.sleep(10)
