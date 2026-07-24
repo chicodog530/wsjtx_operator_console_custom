@@ -79,6 +79,7 @@ class DxAssistant:
         transport, protocol = await loop.create_datagram_endpoint(
             lambda: WsjtxProtocol(self.handle_wsjtx),
             local_addr=(self.settings.udp_host, self.settings.udp_port),
+            reuse_address=True
         )
         self.wsjtx_transport = transport
         self.wsjtx = protocol
