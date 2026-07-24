@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import socket
 import math
 from collections import Counter, deque
 from dataclasses import asdict
@@ -76,10 +77,13 @@ class DxAssistant:
 
     async def start(self) -> None:
         loop = asyncio.get_running_loop()
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        sock.bind((self.settings.udp_host, self.settings.udp_port))
+        
         transport, protocol = await loop.create_datagram_endpoint(
             lambda: WsjtxProtocol(self.handle_wsjtx),
-            local_addr=(self.settings.udp_host, self.settings.udp_port),
-            reuse_address=True
+            sock=sock
         )
         self.wsjtx_transport = transport
         self.wsjtx = protocol
@@ -575,7 +579,8 @@ class DxAssistant:
             await self.broadcast()
 
     async def monitor_lotw_sync(self) -> None:
-        import asyncio.subprocess
+        import asyncio
+import socket.subprocess
         temp_file = self.user_data_dir / "temp_lotw.adi"
         while True:
             await asyncio.sleep(10)
