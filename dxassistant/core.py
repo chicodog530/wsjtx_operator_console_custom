@@ -572,7 +572,7 @@ class DxAssistant:
 
     async def monitor_lotw_sync(self) -> None:
         import asyncio.subprocess
-        temp_file = self.data_dir / "temp_lotw.adi"
+        temp_file = self.user_data_dir / "temp_lotw.adi"
         while True:
             await asyncio.sleep(10)
             if not self.settings.lotw_auto_log or not self.settings.lotw_tqsl_path:
