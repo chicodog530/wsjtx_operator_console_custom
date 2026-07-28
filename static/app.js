@@ -44,7 +44,7 @@ function drawMap(map,rows,markers,paths,compact=false){
 }
 function drawNight(){
   if(nightLayer){nightLayer.remove();nightLayer=null}
-  const now=new Date(),dayStart=Date.UTC(now.getUTCFullYear(),0,0),day=(now-dayStart)/86500000;
+  const now=new Date(),dayStart=Date.UTC(now.getUTCFullYear(),0,0),day=(now-dayStart)/86400000;
   const decl=-23.44*Math.cos(2*Math.PI*(day+10)/365);
   const subLon=180-((now.getUTCHours()+now.getUTCMinutes()/60)*15);
   const antiLon=((subLon+180+540)%360)-180;
@@ -68,10 +68,16 @@ function rankedAdvisors(snapshot){
     const code=r.continent||"UNK";
     return continents.has(code)&&!calledUntil.has(r.call);
   });
-  if($('optNew')?.checked)candidates=candidates.filter(r=>!r.worked_entity);
-  if($('optBand')?.checked)candidates=candidates.filter(r=>r.needed_on_band);
-  if($('optWanted')?.checked)candidates=candidates.filter(r=>r.wanted);
-  if($('optPota')?.checked)candidates=candidates.filter(r=>(window.potaCache && window.potaCache[r.call.toUpperCase()] || (r.reason && /CQ POTA/i.test(r.reason))));
+  const filtersActive = $('optNew')?.checked || $('optBand')?.checked || $('optWanted')?.checked || $('optPota')?.checked;
+  if(filtersActive) {
+    candidates = candidates.filter(r => {
+      if($('optNew')?.checked && !r.worked_entity) return true;
+      if($('optBand')?.checked && r.needed_on_band) return true;
+      if($('optWanted')?.checked && r.wanted) return true;
+      if($('optPota')?.checked && (window.potaCache && window.potaCache[r.call.toUpperCase()] || (r.reason && /CQ POTA/i.test(r.reason)))) return true;
+      return false;
+    });
+  }
 
   // Keep only the newest decode for each call.
   const unique=[];
@@ -113,7 +119,6 @@ advisorOverride=a;
   const confidence=a?.success_estimate||0;$("confidenceBar").style.width=`${confidence}%`;setText("confidenceText",a?`${confidence}%`:"--");
   $("callButton").disabled=!a||!!s.transmitting;$("callButton").textContent=a?`CALL ${a.call} IN WSJT-X`:"CALL IN WSJT-X";
 
-  if(snapshot.sync_stats){setText("qrzStats", `Successfully synced: ${snapshot.sync_stats.qrz_session} this session / ${snapshot.sync_stats.qrz_all_time} all-time`);setText("lotwStats", `Successfully synced: ${snapshot.sync_stats.lotw_session} this session / ${snapshot.sync_stats.lotw_all_time} all-time`);}
   setText("statDecodes",snapshot.stats.decodes.toLocaleString());setText("statQsos",snapshot.stats.qsos.toLocaleString());setText("statWorked",snapshot.stats.dxcc_worked.toLocaleString());
   setText("statConfirmed",snapshot.stats.dxcc_confirmed.toLocaleString());setText("statWanted",snapshot.stats.wanted.toLocaleString());
   advisorQueue=rankedAdvisors(snapshot).slice(0,5);
@@ -225,8 +230,7 @@ function renderAwards(s){
   $("topEntities").innerHTML=(s.top_entities||[]).map((e,i)=>`<div class="entity-rank"><strong>${i+1}</strong><div>${e.flag||""} ${esc(e.entity_name)}<div class="muted">${esc(e.continent||"")}</div></div><strong>${e.heard}</strong></div>`).join("");
 }
 function populateSettings(s){if(!s)return;setText("settingsResult","");$("settingsCallsign").value=s.callsign||"";$("settingsGrid").value=s.grid||"";$("settingsUnit").value=s.distance_unit||"mi";$("settingsAdif").value=s.adif_path||"";$("notificationScore").value=s.notification_score??110;$("voiceScore").value=s.voice_score??120;
-  $("ntpServer").value=s.ntp_server||"time.google.com";$("timeWarning").value=s.time_warning_seconds??1.0;$("settingsQrzKey").value=s.qrz_api_key||"";$("settingsQrzAuto").checked=s.qrz_auto_log||false;
-  $("settingsLotwPath").value=s.lotw_tqsl_path||"C:\\Program Files (x86)\\TrustedQSL\\tqsl.exe";$("settingsLotwLoc").value=s.lotw_station_location||"";$("settingsLotwPass").value=s.lotw_password||"";$("settingsLotwAuto").checked=s.lotw_auto_log||false;}
+  $("ntpServer").value=s.ntp_server||"time.google.com";$("timeWarning").value=s.time_warning_seconds??1.0}
 
 function renderPsk(p){
   const rows=p.reports||[];setText('pskCount',rows.length);setText('pskLast',p.last_refresh?p.last_refresh.substring(11,19):'--');
@@ -423,14 +427,13 @@ function wfZoom(){return Math.max(1,Math.min(8,Number($("waterfallZoom")?.value|
 function wfViewSpan(){return 1/wfZoom()}
 function wfClampCenter(center=wfViewCenter){
   const half=wfViewSpan()/2;
-  if(half>=0.5)return 0.5;
   return Math.max(half,Math.min(1-half,center));
 }
 function wfViewStart(){return wfClampCenter()-wfViewSpan()/2}
-function wfVisibleMinHz(){return wfViewStart()*5000}
-function wfVisibleMaxHz(){return (wfViewStart()+wfViewSpan())*5000}
+function wfVisibleMinHz(){return wfViewStart()*4000}
+function wfVisibleMaxHz(){return (wfViewStart()+wfViewSpan())*4000}
 function wfHzToX(hz,width){
-  return ((hz/5000-wfViewStart())/wfViewSpan())*width;
+  return ((hz/4000-wfViewStart())/wfViewSpan())*width;
 }
 function wfPalette(v,name=$("waterfallPalette")?.value||"classic"){
   v=Math.max(0,Math.min(1,v));
@@ -486,8 +489,7 @@ function setupWaterfallGL(canvas){
   }
   void main(){
     float y=fract(rowOffset+uv.y);
-    float x=viewStart+uv.x*viewSpan;
-    if(x<0.0 || x>1.0){ outColor=vec4(0.0,0.0,0.0,1.0); return; }
+    float x=clamp(viewStart+uv.x*viewSpan,0.0,1.0);
     float v=texture(tex,vec2(x,y)).r;
     vec3 color=paletteMode==2?vec3(v):(paletteMode==1?contrastPalette(v):classicPalette(v));
     outColor=vec4(color,1.0);
@@ -554,7 +556,6 @@ function wfUpdateLabels(){
   setText("waterfallZoomValue",`${Number($("waterfallZoom").value).toFixed(2).replace(/\.00$/,".0")}×`);
   setText("waterfallFloorValue",`${$("waterfallFloor").value} dB`);
   setText("waterfallCeilingValue",`${$("waterfallCeiling").value} dB`);
-  setText("waterfallDriveValue",`${$("waterfallDrive").value > 0 ? "+" : ""}${$("waterfallDrive").value} dB`);
   setText("waterfallAverageValue",Number($("waterfallAverage").value).toFixed(2));
   setText("waterfallPeakValue",Number($("waterfallPeakHold").value).toFixed(2));
   setText("waterfallViewLabel",`${Math.round(wfVisibleMinHz())}–${Math.round(wfVisibleMaxHz())} Hz`);
@@ -571,7 +572,7 @@ function setupWaterfall(){
   wfCtx=hasGL?null:c.getContext("2d",{alpha:false});
   const overlay=$("waterfallOverlay");wfOverlayCtx=overlay?overlay.getContext("2d"):null;
   if(wfCtx){wfCtx.fillStyle="#02070a";wfCtx.fillRect(0,0,c.width,c.height)}
-  const persisted=["waterfallSpeed","waterfallPalette","waterfallFloor","waterfallAutoFloor","waterfallCeiling","waterfallAverage","waterfallPeakHold","waterfallDrive"];
+  const persisted=["waterfallSpeed","waterfallPalette","waterfallFloor","waterfallAutoFloor","waterfallCeiling","waterfallAverage","waterfallPeakHold"];
   for(const id of persisted)$(id).addEventListener("input",()=>{wfUpdateLabels();wfSavePreferences();wfRenderGL();drawWaterfallMinimap()});
   $("waterfallZoom").addEventListener("input",wfViewChanged);
   $("waterfallFollowRx").addEventListener("change",()=>{wfSavePreferences();wfLastLabelSignature="";drawDecodeTicks()});
@@ -588,18 +589,7 @@ function setupWaterfall(){
       wfViewCenter=wfClampCenter(wfDragStartCenter-delta);wfViewChanged();
     }
   });
-  c.addEventListener("mousedown",e=>{
-    if(e.button===0){
-      wfDragging=true;
-      wfDragStartX=e.clientX;
-      wfDragStartCenter=wfViewCenter;
-      c.parentElement.classList.add("dragging");
-      if($("waterfallFollowRx").checked){
-        $("waterfallFollowRx").checked=false;
-        $("waterfallFollowRx").dispatchEvent(new Event("change"));
-      }
-    }
-  });
+  c.addEventListener("mousedown",e=>{if(e.button===0){wfDragging=true;wfDragStartX=e.clientX;wfDragStartCenter=wfViewCenter;c.parentElement.classList.add("dragging")}});
   window.addEventListener("mouseup",()=>{wfDragging=false;c.parentElement.classList.remove("dragging")});
   c.addEventListener("mouseleave",()=>{
     $("waterfallCursor").style.display="none";$("waterfallCursorLabel").style.display="none";
@@ -680,7 +670,7 @@ function parseWaterfallBinary(buffer){
       strength_db:view.getInt16(offset+4,true)/100
     });
   }
-  return{sequence,level_db,suggested_floor,values_dbfs:values,peaks,flags,min_hz:0,max_hz:5000};
+  return{sequence,level_db,suggested_floor,values_dbfs:values,peaks,flags,min_hz:0,max_hz:4000};
 }
 function updatePeakTracks(peaks){
   const now=performance.now(),next=[];
@@ -701,8 +691,8 @@ function drawWaterfallFrame(frame){
   updatePeakTracks(frame.peaks||[]);
   if($("waterfallFollowRx").checked){
     const rx=Number(state?.status?.rx_df);
-    if(Number.isFinite(rx)&&rx>=0&&rx<=5000){
-      const next=wfClampCenter(rx/5000);
+    if(Number.isFinite(rx)&&rx>=0&&rx<=4000){
+      const next=wfClampCenter(rx/4000);
       if(Math.abs(next-wfViewCenter)>.002){wfViewCenter=next;wfViewChanged()}
     }
   }
@@ -740,10 +730,6 @@ function drawWaterfallFrame(frame){
       const img=wfCtx.createImageData(c.width,1);
       for(let x=0;x<c.width;x++){
         const source=(start+x/c.width*span)*(intensity.length-1);
-        if(source<0 || source>intensity.length-1){
-            const p=x*4; img.data[p]=0;img.data[p+1]=0;img.data[p+2]=0;img.data[p+3]=255;
-            continue;
-        }
         const lo=Math.floor(source),hi=Math.min(intensity.length-1,lo+1),q=source-lo;
         const value=(intensity[lo]*(1-q)+intensity[hi]*q)/255,[r,g,b]=wfPalette(value),p=x*4;
         img.data[p]=r;img.data[p+1]=g;img.data[p+2]=b;img.data[p+3]=255;
@@ -835,7 +821,7 @@ function drawWaterfallMinimap(){
 }
 function wfHzFromEvent(e){
   const r=$("waterfallCanvas").getBoundingClientRect();
-  return Math.max(0,Math.min(5000,(wfViewStart()+(e.clientX-r.left)/r.width*wfViewSpan())*5000));
+  return Math.max(0,Math.min(4000,(wfViewStart()+(e.clientX-r.left)/r.width*wfViewSpan())*4000));
 }
 function wfMoveCursor(e){
   const wrap=$("waterfallCanvas").getBoundingClientRect(),x=e.clientX-wrap.left,hz=wfHzFromEvent(e);
@@ -862,17 +848,6 @@ function wfSelect(e,callNow){
 window.addEventListener("load",()=>{
   setupWaterfall();
   const b=$("openSettingsFirstRun");if(b)b.onclick=()=>document.querySelector('[data-view="settings"]')?.click();
-  $("verifyLotwPath").onclick=async()=>{
-  const path=$("settingsLotwPath").value;
-  setText("lotwVerifyResult","Verifying...");
-  const fd=new FormData();fd.append("path",path);
-  const r=await fetch("/api/settings/verify_tqsl",{method:"POST",body:fd}),data=await r.json();
-  setText("lotwVerifyResult",data.message);
-  $("lotwVerifyResult").style.color=data.ok?"var(--accent)":"red";
-};
-$("openLotwHelp").onclick=()=>$("lotwHelpDialog").showModal();
-document.querySelectorAll(".close-btn").forEach(b=>b.onclick=e=>{const d=e.target.closest("dialog");if(d)d.close();});
-$("aboutButton").onclick=()=>$("aboutDialog").showModal();
   const about=$("aboutDialog"),open=$("aboutButton"),close=$("aboutClose");
   if(open)open.onclick=()=>about.showModal();
   if(close)close.onclick=()=>about.close();

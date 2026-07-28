@@ -30,12 +30,6 @@ class Settings:
     audio_sample_rate: int = 48000
     audio_fft_size: int = 4096
     audio_fps: int = 15
-    qrz_api_key: str = ""
-    qrz_auto_log: bool = False
-    lotw_auto_log: bool = False
-    lotw_tqsl_path: str = r"C:\Program Files (x86)\TrustedQSL\tqsl.exe"
-    lotw_station_location: str = ""
-    lotw_password: str = ""
     audio_auto_start: bool = False
     database_path: str = "dxassistant.db"
 

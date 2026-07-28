@@ -42,6 +42,7 @@ CREATE TABLE IF NOT EXISTS decodes (
 CREATE INDEX IF NOT EXISTS idx_decodes_heard_at ON decodes(heard_at DESC);
 CREATE INDEX IF NOT EXISTS idx_decodes_call ON decodes(call);
 CREATE INDEX IF NOT EXISTS idx_decodes_entity_id ON decodes(entity_id);
+CREATE INDEX IF NOT EXISTS idx_qso_entity_id ON qso(entity_id);
 CREATE INDEX IF NOT EXISTS idx_decodes_continent ON decodes(continent);
 CREATE INDEX IF NOT EXISTS idx_decodes_cq_zone ON decodes(cq_zone);
 CREATE INDEX IF NOT EXISTS idx_decodes_itu_zone ON decodes(itu_zone);
@@ -56,12 +57,8 @@ CREATE TABLE IF NOT EXISTS qso (
     confirmed INTEGER NOT NULL DEFAULT 0,
     qso_date TEXT,
     time_on TEXT,
-    qrz_synced INTEGER NOT NULL DEFAULT 0,
-    lotw_synced INTEGER NOT NULL DEFAULT 0,
-    UNIQUE(call, band, mode, qso_date, time_on)
+    UNIQUE(call, band, mode, qso_date)
 );
-
-CREATE INDEX IF NOT EXISTS idx_qso_entity_id ON qso(entity_id);
 
 CREATE TABLE IF NOT EXISTS wanted (
     pattern TEXT PRIMARY KEY,
@@ -89,16 +86,12 @@ class Database:
         self._cache_top = None
         self._cache_top_time = 0
         with self.conn:
+            # Migration: Recreate the qso table if it has the old schema (which included time_on in UNIQUE constraint)
+            row = self.conn.execute("SELECT sql FROM sqlite_master WHERE type='table' AND name='qso'").fetchone()
+            if row and "time_on)" in row["sql"]:
+                self.conn.execute("DROP TABLE qso")
+                self.log_event("INFO", "Migrated qso table schema for robust deduplication")
             self.conn.executescript(SCHEMA)
-            try:
-                self.conn.execute("ALTER TABLE qso ADD COLUMN qrz_synced INTEGER NOT NULL DEFAULT 0")
-            except sqlite3.OperationalError:
-                pass
-            try:
-                self.conn.execute("ALTER TABLE qso ADD COLUMN lotw_synced INTEGER NOT NULL DEFAULT 0")
-            except sqlite3.OperationalError:
-                pass
-
     def execute(self, sql: str, params: tuple[Any, ...] = ()) -> sqlite3.Cursor:
         with self.lock, self.conn:
             return self.conn.execute(sql, params)

@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import asyncio
-import socket
 import math
 from collections import Counter, deque
 from dataclasses import asdict
@@ -42,8 +41,6 @@ class DxAssistant:
         self.wsjtx: WsjtxProtocol | None = None
         self.wsjtx_transport: asyncio.DatagramTransport | None = None
         self.clients: set[Any] = set()
-        self.qrz_session_count = 0
-        self.lotw_session_count = 0
         self.status: dict[str, Any] = {
             "connected": False,
             "last_packet": None,
@@ -77,13 +74,9 @@ class DxAssistant:
 
     async def start(self) -> None:
         loop = asyncio.get_running_loop()
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        sock.bind((self.settings.udp_host, self.settings.udp_port))
-        
         transport, protocol = await loop.create_datagram_endpoint(
             lambda: WsjtxProtocol(self.handle_wsjtx),
-            sock=sock
+            local_addr=(self.settings.udp_host, self.settings.udp_port),
         )
         self.wsjtx_transport = transport
         self.wsjtx = protocol
@@ -93,8 +86,6 @@ class DxAssistant:
         if self.settings.psk_reporter_enabled:
             asyncio.create_task(self.monitor_psk_reporter())
         asyncio.create_task(self.broadcast_loop())
-        asyncio.create_task(self.monitor_qrz_sync())
-        asyncio.create_task(self.monitor_lotw_sync())
 
     async def stop(self) -> None:
         if self.wsjtx_transport:
@@ -124,26 +115,6 @@ class DxAssistant:
         elif msg_type == 6:
             self.status["connected"] = False
             await self.broadcast()
-        elif msg_type in (10, 12) and message.get("logged_adif"):
-            from .adif import parse_adif
-            records = list(parse_adif(message["logged_adif"]))
-            if records:
-                for record in records:
-                    call = record.get("CALL", "").upper()
-                    if not call: continue
-                    entity = self.dxcc.lookup(call)
-                    confirmed = any(record.get(f, "").upper() == "Y" for f in ("QSL_RCVD", "LOTW_QSL_RCVD", "EQSL_QSL_RCVD"))
-                    self.db.execute(
-                        "INSERT INTO qso(call, band, mode, grid, entity_id, confirmed, qso_date, time_on) VALUES (?,?,?,?,?,?,?,?) ON CONFLICT(call, band, mode, qso_date, time_on) DO UPDATE SET grid=excluded.grid, entity_id=excluded.entity_id, confirmed=MAX(qso.confirmed, excluded.confirmed)",
-                        (call, record.get("BAND", ""), record.get("SUBMODE") or record.get("MODE", ""), record.get("GRIDSQUARE", ""), entity.id, int(confirmed), record.get("QSO_DATE", ""), record.get("TIME_ON", ""))
-                    )
-                    new_recent = [r for r in self.recent if r.get("call") != call]
-                    self.recent.clear()
-                    self.recent.extend(new_recent)
-                    if self.best_target and self.best_target.get("call") == call:
-                        self.best_target = None
-                self.db.log_event("INFO", f"Instant logged {len(records)} ADIF records from UDP")
-                await self.broadcast()
 
     def update_status(self, message: dict) -> None:
         for key in (
@@ -516,150 +487,6 @@ class DxAssistant:
             ),
         }
 
-    async def monitor_qrz_sync(self) -> None:
-        import urllib.request
-        import urllib.parse
-        while True:
-            await asyncio.sleep(10)
-            if not self.settings.qrz_auto_log or not self.settings.qrz_api_key:
-                continue
-            
-            unsynced = self.db.query("SELECT * FROM qso WHERE qrz_synced = 0 AND qso_date IS NOT NULL LIMIT 10")
-            if not unsynced:
-                continue
-            
-            for row in unsynced:
-                call = row.get("call", "")
-                if not call:
-                    self.db.execute("UPDATE qso SET qrz_synced = 1 WHERE id = ?", (row["id"],))
-                    continue
-                
-                adif = f"<call:{len(call)}>{call}"
-                if row.get("band"):
-                    band = row["band"]
-                    adif += f"<band:{len(band)}>{band}"
-                if row.get("mode"):
-                    mode = row["mode"]
-                    adif += f"<mode:{len(mode)}>{mode}"
-                if row.get("qso_date"):
-                    qdate = row["qso_date"].replace("-", "")
-                    adif += f"<qso_date:{len(qdate)}>{qdate}"
-                if row.get("time_on"):
-                    ton = row["time_on"].replace(":", "")
-                    adif += f"<time_on:{len(ton)}>{ton}"
-                if row.get("grid"):
-                    grid = row["grid"]
-                    adif += f"<gridsquare:{len(grid)}>{grid}"
-                adif += "<eor>"
-                
-                data = urllib.parse.urlencode({
-                    "KEY": self.settings.qrz_api_key,
-                    "ACTION": "INSERT",
-                    "ADIF": adif
-                }).encode("utf-8")
-                
-                req = urllib.request.Request("https://logbook.qrz.com/api", data=data)
-                req.add_header("User-Agent", "WSJTX_Operator_Console/1.4.0")
-                
-                try:
-                    loop = asyncio.get_running_loop()
-                    response = await loop.run_in_executor(None, urllib.request.urlopen, req, None, 10.0)
-                    body = response.read().decode("utf-8")
-                    if "RESULT=OK" in body.upper() or "RESULT=REPLACE" in body.upper():
-                        self.db.execute("UPDATE qso SET qrz_synced = 1 WHERE id = ?", (row["id"],))
-                        self.qrz_session_count += 1
-                        self.db.log_event("INFO", f"QRZ.com sync successful for {call}")
-                    else:
-                        self.db.log_event("WARNING", f"QRZ upload failed for {call}: {body.strip()}")
-                        self.db.execute("UPDATE qso SET qrz_synced = 1 WHERE id = ?", (row["id"],))
-                except Exception as exc:
-                    self.db.log_event("ERROR", f"QRZ connection error for {call}: {exc}")
-                    await asyncio.sleep(5)
-            
-            await self.broadcast()
-
-    async def monitor_lotw_sync(self) -> None:
-        import asyncio.subprocess
-        temp_file = self.user_data_dir / "temp_lotw.adi"
-        while True:
-            await asyncio.sleep(10)
-            if not self.settings.lotw_auto_log or not self.settings.lotw_tqsl_path:
-                continue
-            
-            unsynced = self.db.query("SELECT * FROM qso WHERE lotw_synced = 0 AND qso_date IS NOT NULL LIMIT 10")
-            if not unsynced:
-                continue
-            
-            # Construct a temporary ADIF
-            adif_data = ""
-            for row in unsynced:
-                call = row.get("call", "")
-                if not call:
-                    self.db.execute("UPDATE qso SET lotw_synced = 1 WHERE id = ?", (row["id"],))
-                    continue
-                adif = f"<call:{len(call)}>{call}"
-                if row.get("band"):
-                    band = row["band"]
-                    adif += f"<band:{len(band)}>{band}"
-                if row.get("mode"):
-                    mode = row["mode"]
-                    adif += f"<mode:{len(mode)}>{mode}"
-                if row.get("qso_date"):
-                    qdate = row["qso_date"].replace("-", "")
-                    adif += f"<qso_date:{len(qdate)}>{qdate}"
-                if row.get("time_on"):
-                    ton = row["time_on"].replace(":", "")
-                    adif += f"<time_on:{len(ton)}>{ton}"
-                if row.get("grid"):
-                    grid = row["grid"]
-                    adif += f"<gridsquare:{len(grid)}>{grid}"
-                adif += "<eor>\n"
-                adif_data += adif
-            
-            if not adif_data:
-                continue
-                
-            try:
-                temp_file.write_text(adif_data, encoding="utf-8")
-                
-                cmd = [self.settings.lotw_tqsl_path, "-x", "-d", "-u", "-a", "compliant"]
-                if self.settings.lotw_station_location:
-                    cmd.extend(["-l", self.settings.lotw_station_location])
-                if self.settings.lotw_password:
-                    cmd.extend(["-p", self.settings.lotw_password])
-                cmd.append(str(temp_file))
-                
-                proc = await asyncio.create_subprocess_exec(
-                    *cmd,
-                    stdout=asyncio.subprocess.PIPE,
-                    stderr=asyncio.subprocess.PIPE
-                )
-                stdout, stderr = await asyncio.wait_for(proc.communicate(), timeout=30.0)
-                
-                if proc.returncode == 0:
-                    for row in unsynced:
-                        if row.get("call"):
-                            self.db.execute("UPDATE qso SET lotw_synced = 1 WHERE id = ?", (row["id"],))
-                    self.lotw_session_count += len(unsynced)
-                    self.db.log_event("INFO", f"LoTW sync successful for {len(unsynced)} QSOs")
-                else:
-                    err = stderr.decode('utf-8', errors='ignore').strip() or stdout.decode('utf-8', errors='ignore').strip()
-                    self.db.log_event("ERROR", f"LoTW sync failed: {err}")
-                    # Mark as synced so we don't get stuck in a loop trying to upload malformed data forever?
-                    # Or keep 0. Let's keep 0 but sleep longer on error.
-                    await asyncio.sleep(60)
-            except Exception as exc:
-                self.db.log_event("ERROR", f"LoTW connection/execution error: {exc}")
-                await asyncio.sleep(60)
-            
-            try:
-                if temp_file.exists():
-                    temp_file.unlink()
-            except OSError:
-                pass
-            
-            await self.broadcast()
-
     def safe_band_advisor(self) -> dict[str, Any]:
         try:
             return self.band_advisor()
@@ -680,12 +507,6 @@ class DxAssistant:
         return {
             "status": self.status,
             "stats": self.db.stats(),
-            "sync_stats": {
-                "qrz_all_time": self.db.scalar("SELECT count(*) FROM qso WHERE qrz_synced = 1"),
-                "qrz_session": getattr(self, 'qrz_session_count', 0),
-                "lotw_all_time": self.db.scalar("SELECT count(*) FROM qso WHERE lotw_synced = 1"),
-                "lotw_session": getattr(self, 'lotw_session_count', 0)
-            },
             "advisor": self.public_row(self.best_target) if self.best_target else None,
             "recent": [self.public_row(row) for row in list(self.recent)[:80]],
             "propagation": self.propagation_summary(),
@@ -702,12 +523,6 @@ class DxAssistant:
                 "map_tile_url": self.settings.map_tile_url,
                 "ntp_server": self.settings.ntp_server,
                 "time_warning_seconds": self.settings.time_warning_seconds,
-                "qrz_api_key": self.settings.qrz_api_key,
-                "qrz_auto_log": self.settings.qrz_auto_log,
-                "lotw_auto_log": self.settings.lotw_auto_log,
-                "lotw_tqsl_path": self.settings.lotw_tqsl_path,
-                "lotw_station_location": self.settings.lotw_station_location,
-                "lotw_password": self.settings.lotw_password,
             },
             "radar": self.db.radar(15),
             "band_summary": self.db.band_summary(15),
@@ -819,7 +634,7 @@ class DxAssistant:
                 """INSERT INTO qso(
                     call, band, mode, grid, entity_id, confirmed, qso_date, time_on
                 ) VALUES (?,?,?,?,?,?,?,?)
-                ON CONFLICT(call, band, mode, qso_date, time_on)
+                ON CONFLICT(call, band, mode, qso_date)
                 DO UPDATE SET
                     grid=excluded.grid,
                     entity_id=excluded.entity_id,

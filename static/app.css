@@ -223,9 +223,9 @@ nav{display:flex;gap:6px}.nav-btn{padding:8px 12px;background:transparent;color:
 .about-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}
 .about-dialog h2{margin:4px 0 10px}.about-dialog h3{margin-top:22px}.about-dialog li{margin:7px 0}
 .about-dialog a{color:#8fe9ff}
-body.waterfall-detached header,body.waterfall-detached .first-run-panel,body.waterfall-detached main>.view:not(#view-dashboard),body.waterfall-detached #view-dashboard>*:not(.waterfall-panel){display:none!important}
-body.waterfall-detached main{padding:8px}body.waterfall-detached .waterfall-panel{margin:0;height:calc(100vh - 16px);display:flex;flex-direction:column;}
-body.waterfall-detached .waterfall-wrap{flex:1;min-height:200px}
+body.waterfall-detached header,body.waterfall-detached .first-run-panel,body.waterfall-detached #view-dashboard>*:not(.waterfall-panel),body.waterfall-detached main>.view:not(#view-dashboard){display:none!important}
+body.waterfall-detached main{padding:8px}body.waterfall-detached .waterfall-panel{margin:0;min-height:calc(100vh - 16px)}
+body.waterfall-detached .waterfall-wrap{height:calc(100vh - 210px);min-height:300px}
 
 
 /* POTA Tag Styling */

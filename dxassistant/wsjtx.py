@@ -150,11 +150,6 @@ class WsjtxProtocol(asyncio.DatagramProtocol):
                 payload["logged"] = True
             elif msg_type == 6:
                 payload["closed"] = True
-            elif msg_type in (10, 12):
-                try:
-                    payload["logged_adif"] = reader.qstring()
-                except Exception:
-                    pass
 
             asyncio.create_task(self.on_message(payload))
         except Exception as exc:

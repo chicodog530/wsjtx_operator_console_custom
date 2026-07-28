@@ -234,12 +234,6 @@ async def save_settings(
     voice_score: int = Form(120),
     ntp_server: str = Form("time.google.com"),
     time_warning_seconds: float = Form(1.0),
-    qrz_api_key: str = Form(""),
-    qrz_auto_log: bool = Form(False),
-    lotw_auto_log: bool = Form(False),
-    lotw_tqsl_path: str = Form(""),
-    lotw_station_location: str = Form(""),
-    lotw_password: str = Form(""),
 ):
     assistant.settings.callsign = callsign.strip().upper()
     assistant.settings.grid = grid.strip().upper()
@@ -249,26 +243,12 @@ async def save_settings(
     assistant.settings.voice_score = max(0, min(voice_score, 300))
     assistant.settings.ntp_server = ntp_server.strip() or "time.google.com"
     assistant.settings.time_warning_seconds = max(0.1, min(time_warning_seconds, 5.0))
-    assistant.settings.qrz_api_key = qrz_api_key.strip()
-    assistant.settings.qrz_auto_log = qrz_auto_log
-    assistant.settings.lotw_auto_log = lotw_auto_log
-    assistant.settings.lotw_tqsl_path = lotw_tqsl_path.strip()
-    assistant.settings.lotw_station_location = lotw_station_location.strip()
-    assistant.settings.lotw_password = lotw_password.strip()
     assistant.time_status.server = assistant.settings.ntp_server
     assistant.settings_store.save()
     assistant.status["de_call"] = assistant.settings.callsign
     assistant.status["de_grid"] = assistant.settings.grid
     await assistant.broadcast()
     return {"ok": True}
-
-
-@app.post("/api/settings/verify_tqsl")
-async def verify_tqsl(path: str = Form("")):
-    target = Path(path.strip() or r"C:\Program Files (x86)\TrustedQSL\tqsl.exe")
-    if target.exists() and target.is_file():
-        return {"ok": True, "message": "TQSL executable found!"}
-    return {"ok": False, "message": "TQSL executable not found at that location."}
 
 
 @app.post("/api/psk-refresh")

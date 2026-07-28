@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>WSJT-X Operator Console</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="stylesheet" href="/static/app.css?v=1.4.5">
+<link rel="stylesheet" href="/static/app.css">
 </head>
 <body>
 <header class="topbar">
@@ -68,10 +68,10 @@
           <label><input id="optBest" type="checkbox" checked> Best overall score</label>
           <label><input id="optFar" type="checkbox"> Favor farthest distance</label>
           <label><input id="optStrong" type="checkbox"> Favor strongest signal</label>
-          <label><input id="optNew" type="checkbox"> Only new DXCC</label>
-          <label><input id="optBand" type="checkbox"> Only needed on this band</label>
-          <label><input id="optWanted" type="checkbox"> Only wanted targets</label>
-          <label><input id="optPota" type="checkbox"> Only POTA stations</label>
+          <label><input id="optNew" type="checkbox"> Show new DXCC</label>
+          <label><input id="optBand" type="checkbox"> Show needed on this band</label>
+          <label><input id="optWanted" type="checkbox"> Show wanted targets</label>
+          <label><input id="optPota" type="checkbox"> Show POTA stations</label>
         </div>
         <div class="continent-options"><span>Continents:</span>
           <label><input class="continent-filter" value="NA" type="checkbox" checked> NA</label><label><input class="continent-filter" value="SA" type="checkbox" checked> SA</label>
@@ -103,7 +103,6 @@
     <div id="advisorQueue" class="advisor-queue"></div>
   </section>
 
-  
   <section class="panel waterfall-panel">
     <div class="waterfall-head">
       <div><div class="panel-title">Live audio waterfall</div><div id="waterfallStatus" class="muted">Select the same USB audio input used by WSJT-X, then start capture</div></div>
@@ -143,7 +142,8 @@
     <canvas id="waterfallScale" class="waterfall-scale-canvas" width="1280" height="34"></canvas>
     <div id="waterfallSelection" class="waterfall-selection muted">No signal selected</div>
   </section>
-<section class="stats-grid">
+
+  <section class="stats-grid">
     <article class="stat"><span>Total decodes</span><strong id="statDecodes">0</strong></article><article class="stat"><span>QSOs imported</span><strong id="statQsos">0</strong></article>
     <article class="stat"><span>DXCC worked</span><strong id="statWorked">0</strong></article><article class="stat"><span>DXCC confirmed</span><strong id="statConfirmed">0</strong></article>
     <article class="stat"><span>Wanted targets</span><strong id="statWanted">0</strong></article>
@@ -231,7 +231,43 @@
 
 <section id="view-propagation" class="view">
   <section class="page-heading"><div><div class="eyebrow">BAND INTELLIGENCE</div><h2>Propagation</h2></div><select id="propWindow"><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="60">1 hour</option><option value="180">3 hours</option></select></section>
-  
+  <section class="panel waterfall-panel">
+    <div class="waterfall-head">
+      <div><div class="panel-title">Live audio waterfall</div><div id="waterfallStatus" class="muted">Select the same USB audio input used by WSJT-X, then start capture</div></div>
+      <div class="waterfall-controls">
+        <select id="audioDevice"><option value="-1">Default audio input</option></select>
+        <button id="refreshAudioDevices">Refresh devices</button>
+        <button id="startWaterfall" class="primary">START WATERFALL</button>
+        <button id="stopWaterfall">Stop</button>
+      </div>
+    </div>
+    <div class="waterfall-toolbar">
+      <label>Speed <input id="waterfallSpeed" type="range" min="10" max="200" step="5" value="65"><span id="waterfallSpeedValue">65%</span></label>
+      <label>Zoom <input id="waterfallZoom" type="range" min="0.8" max="8" step="0.1" value="1"><span id="waterfallZoomValue">1.0×</span></label>
+      <label class="compact-check"><input id="waterfallFollowRx" type="checkbox"> Follow RX</label>
+      <button id="waterfallResetView" type="button">RESET VIEW</button>
+      <button id="waterfallDetach" type="button">DETACH</button>
+      <label>Palette <select id="waterfallPalette"><option value="classic">Classic SDR</option><option value="contrast">High contrast</option><option value="gray">Grayscale</option></select></label>
+      <label>Drive <input id="waterfallDrive" type="range" min="-30" max="30" step="1" value="0"><span id="waterfallDriveValue">0 dB</span></label>
+      <label>Floor <input id="waterfallFloor" type="range" min="-140" max="-70" step="1" value="-120"><span id="waterfallFloorValue">-120 dB</span></label>
+      <label class="compact-check"><input id="waterfallAutoFloor" type="checkbox" checked> Auto floor</label>
+      <label>Ceiling <input id="waterfallCeiling" type="range" min="-90" max="-20" step="1" value="-45"><span id="waterfallCeilingValue">-45 dB</span></label>
+      <label>Averaging <input id="waterfallAverage" type="range" min="0" max="0.95" step="0.05" value="0.55"><span id="waterfallAverageValue">0.55</span></label>
+      <label>Peak hold <input id="waterfallPeakHold" type="range" min="0" max="0.98" step="0.02" value="0.82"><span id="waterfallPeakValue">0.82</span></label>
+      <span id="waterfallViewLabel">0–4000 Hz</span>
+      <span id="audioLevel">-- dBFS</span><span id="audioHealth"></span>
+      <span>Drag: pan · Wheel: zoom · Shift+wheel: pan · Double-click: call</span>
+    </div>
+    <div class="waterfall-wrap">
+      <canvas id="waterfallCanvas" width="1280" height="420"></canvas>
+      <canvas id="waterfallOverlay" width="1280" height="420"></canvas>
+      <div id="waterfallCursor" class="waterfall-cursor"></div>
+      <div id="waterfallCursorLabel" class="waterfall-cursor-label">1500 Hz</div>
+    </div>
+    <canvas id="waterfallScale" class="waterfall-scale-canvas" width="1280" height="34"></canvas>
+    <div id="waterfallSelection" class="waterfall-selection muted">No signal selected</div>
+  </section>
+
   <section class="stats-grid">
     <article class="stat"><span>Active entities</span><strong id="propEntities">0</strong></article><article class="stat"><span>Stations heard</span><strong id="propStations">0</strong></article>
     <article class="stat"><span>Average SNR</span><strong id="propSnr">--</strong></article><article class="stat"><span>Average distance</span><strong id="propDistance">--</strong></article>
@@ -246,7 +282,43 @@
 
 <section id="view-awards" class="view">
   <section class="page-heading"><div><div class="eyebrow">LOGBOOK INTELLIGENCE</div><h2>Awards and progress</h2></div></section>
-  
+  <section class="panel waterfall-panel">
+    <div class="waterfall-head">
+      <div><div class="panel-title">Live audio waterfall</div><div id="waterfallStatus" class="muted">Select the same USB audio input used by WSJT-X, then start capture</div></div>
+      <div class="waterfall-controls">
+        <select id="audioDevice"><option value="-1">Default audio input</option></select>
+        <button id="refreshAudioDevices">Refresh devices</button>
+        <button id="startWaterfall" class="primary">START WATERFALL</button>
+        <button id="stopWaterfall">Stop</button>
+      </div>
+    </div>
+    <div class="waterfall-toolbar">
+      <label>Speed <input id="waterfallSpeed" type="range" min="10" max="200" step="5" value="65"><span id="waterfallSpeedValue">65%</span></label>
+      <label>Zoom <input id="waterfallZoom" type="range" min="0.8" max="8" step="0.1" value="1"><span id="waterfallZoomValue">1.0×</span></label>
+      <label class="compact-check"><input id="waterfallFollowRx" type="checkbox"> Follow RX</label>
+      <button id="waterfallResetView" type="button">RESET VIEW</button>
+      <button id="waterfallDetach" type="button">DETACH</button>
+      <label>Palette <select id="waterfallPalette"><option value="classic">Classic SDR</option><option value="contrast">High contrast</option><option value="gray">Grayscale</option></select></label>
+      <label>Drive <input id="waterfallDrive" type="range" min="-30" max="30" step="1" value="0"><span id="waterfallDriveValue">0 dB</span></label>
+      <label>Floor <input id="waterfallFloor" type="range" min="-140" max="-70" step="1" value="-120"><span id="waterfallFloorValue">-120 dB</span></label>
+      <label class="compact-check"><input id="waterfallAutoFloor" type="checkbox" checked> Auto floor</label>
+      <label>Ceiling <input id="waterfallCeiling" type="range" min="-90" max="-20" step="1" value="-45"><span id="waterfallCeilingValue">-45 dB</span></label>
+      <label>Averaging <input id="waterfallAverage" type="range" min="0" max="0.95" step="0.05" value="0.55"><span id="waterfallAverageValue">0.55</span></label>
+      <label>Peak hold <input id="waterfallPeakHold" type="range" min="0" max="0.98" step="0.02" value="0.82"><span id="waterfallPeakValue">0.82</span></label>
+      <span id="waterfallViewLabel">0–4000 Hz</span>
+      <span id="audioLevel">-- dBFS</span><span id="audioHealth"></span>
+      <span>Drag: pan · Wheel: zoom · Shift+wheel: pan · Double-click: call</span>
+    </div>
+    <div class="waterfall-wrap">
+      <canvas id="waterfallCanvas" width="1280" height="420"></canvas>
+      <canvas id="waterfallOverlay" width="1280" height="420"></canvas>
+      <div id="waterfallCursor" class="waterfall-cursor"></div>
+      <div id="waterfallCursorLabel" class="waterfall-cursor-label">1500 Hz</div>
+    </div>
+    <canvas id="waterfallScale" class="waterfall-scale-canvas" width="1280" height="34"></canvas>
+    <div id="waterfallSelection" class="waterfall-selection muted">No signal selected</div>
+  </section>
+
   <section class="stats-grid">
     <article class="stat"><span>DXCC worked</span><strong id="awardWorked">0</strong><div class="progress"><i id="awardWorkedBar"></i></div></article>
     <article class="stat"><span>DXCC confirmed</span><strong id="awardConfirmed">0</strong><div class="progress"><i id="awardConfirmedBar"></i></div></article>
@@ -268,20 +340,6 @@
     <label>Callsign<input name="callsign" id="settingsCallsign" value=""></label><label>Grid square<input name="grid" id="settingsGrid" value=""></label>
     <label>Distance unit<select name="distance_unit" id="settingsUnit"><option value="mi">Miles</option><option value="km">Kilometers</option></select></label>
     <label>Automatic ADIF path<input name="adif_path" id="settingsAdif" placeholder="C:\Users\...\wsjtx_log.adi"></label>
-    <label>QRZ.com Logbook API Key<input name="qrz_api_key" id="settingsQrzKey" type="password" placeholder="ABCD-1234-5678-9012"></label>
-    <label class="checkbox" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;margin-bottom:0.25rem;"><input type="checkbox" name="qrz_auto_log" id="settingsQrzAuto" value="true"> Auto-upload logged QSOs to QRZ.com</label>
-    <div id="qrzStats" class="muted" style="margin-bottom:1rem; font-size:0.85rem; font-weight: 500;"></div>
-    
-    <div style="display:flex;align-items:center;justify-content:space-between;">
-      <label style="margin:0;font-weight:600;font-size:0.9rem;">Logbook of The World (LoTW)</label>
-      <button type="button" id="openLotwHelp" style="padding:2px 8px;font-size:0.8rem;cursor:pointer;">Help (?)</button>
-    </div>
-    <label style="margin-top:0.5rem;">TQSL Executable Path<div style="display:flex;gap:0.5rem;"><input name="lotw_tqsl_path" id="settingsLotwPath" value="C:\Program Files (x86)\TrustedQSL\tqsl.exe" style="flex:1;"><button type="button" id="verifyLotwPath">Verify</button></div><div id="lotwVerifyResult" class="muted"></div></label>
-    <label>Station Location (leave blank for default)<input name="lotw_station_location" id="settingsLotwLoc" placeholder="e.g. Home QTH"></label>
-    <label>Certificate Password (if any)<input name="lotw_password" id="settingsLotwPass" type="password"></label>
-    <label class="checkbox" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;margin-bottom:0.25rem;"><input type="checkbox" name="lotw_auto_log" id="settingsLotwAuto" value="true"> Auto-upload logged QSOs to LoTW</label>
-    <div id="lotwStats" class="muted" style="margin-bottom:1rem; font-size:0.85rem; font-weight: 500;"></div>
-    
     <label>Desktop notification score<input name="notification_score" id="notificationScore" type="number" min="0" max="300"></label>
     <label>Voice alert score<input name="voice_score" id="voiceScore" type="number" min="0" max="300"></label>
     <label>NTP time server<input name="ntp_server" id="ntpServer" value="time.google.com"></label>
@@ -289,28 +347,11 @@
     <button type="button" id="enableNotifications">Enable desktop notifications</button><button class="primary">Save settings</button><div id="settingsResult" class="muted"></div>
   </form></section>
 </section>
-
 </main>
 
-<dialog id="lotwHelpDialog" class="about-dialog">
-  <div class="about-head">
-    <div><div class="eyebrow">HELP</div><h2>LoTW Auto-Logging</h2></div>
-    <button type="button" class="close-btn" onclick="lotwHelpDialog.close()">×</button>
-  </div>
-  <div class="about-body">
-    <p>To use LoTW Auto-Logging, you must have the ARRL <strong>TrustedQSL (TQSL)</strong> application installed on this computer and configured with your active Callsign Certificate.</p>
-    <p><strong>Requirements:</strong></p>
-    <ul>
-      <li><strong>TQSL Executable Path:</strong> The path to the <code>tqsl.exe</code> program on your computer. Usually <code>C:\Program Files (x86)\TrustedQSL\tqsl.exe</code>.</li>
-      <li><strong>Station Location:</strong> If you use multiple locations in TQSL, type the EXACT name of the Station Location you want to use. If you only have one location, you can usually leave this blank.</li>
-      <li><strong>Certificate Password:</strong> If you protected your Callsign Certificate with a password in TQSL, enter it here. Otherwise, leave it blank.</li>
-    </ul>
-    <p><strong>How it works:</strong> The console will silently generate an ADIF file for your new QSOs and pass it to TQSL to sign and upload in the background.</p>
-  </div>
-</dialog>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-<script src="/static/app.js?v=1.4.5"></script>
+<script src="/static/app.js"></script>
 <dialog id="aboutDialog" class="about-dialog">
   <div class="about-head">
     <div><div class="eyebrow">APPLICATION INFORMATION</div><h2>WSJT-X Operator Console 1.1</h2></div>

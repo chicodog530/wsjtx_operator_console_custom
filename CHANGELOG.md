@@ -2,6 +2,12 @@
 
 All notable public changes to WSJT-X Operator Console are documented here.
 
+## 1.5.0 - ADIF Deduplication & Filter Enhancements
+
+### Added
+- **Inclusive Smart Filters:** The four Smart DX Advisor filters (New DXCC, Needed on Band, Wanted Targets, POTA Stations) now operate as an OR (Union) filter. Selecting multiple options will now display stations matching *any* of the checked criteria, rather than requiring them to meet all of them simultaneously. 
+- **Robust Log Deduplication:** Solved a major issue causing bloated duplicate logs when importing ADIF files from multiple logging programs. The database schema has been relaxed to ignore minute/second variations, cleanly merging duplicate QSOs from WSJT-X and QRZ. A seamless auto-migration ensures existing user logs are automatically rebuilt with the new deduplication rules.
+
 ## 1.4.0 — Waterfall Controls & Sync Fix
 
 ### Added
