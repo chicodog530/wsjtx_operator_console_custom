@@ -74,7 +74,7 @@ function rankedAdvisors(snapshot){
       if($('optNew')?.checked && !r.worked_entity) return true;
       if($('optBand')?.checked && r.needed_on_band) return true;
       if($('optWanted')?.checked && r.wanted) return true;
-      if($('optPota')?.checked && (window.potaCache && window.potaCache[r.call.toUpperCase()] || (r.reason && /CQ POTA/i.test(r.reason)))) return true;
+      if($('optPota')?.checked && (window.potaCache && window.potaCache[window.getBaseCall(r.call)] || (r.reason && /CQ POTA/i.test(r.reason)))) return true;
       return false;
     });
   }
@@ -859,25 +859,29 @@ window.addEventListener("load",()=>{
 // --- POTA Integration ---
 window.potaCache = {};
 
+window.getBaseCall = function(c) {
+    if(!c) return "";
+    const parts = c.split('/');
+    return parts.reduce((a, b) => a.length > b.length ? a : b).toUpperCase();
+};
+
 async function fetchPotaSpots() {
     try {
         const response = await fetch('https://api.pota.app/spot/activator');
         if (response.ok) {
             const data = await response.json();
             const newCache = {};
+            const processSpots = (spots) => {
+                spots.forEach(spot => {
+                    if (spot.activator && spot.reference) {
+                        newCache[window.getBaseCall(spot.activator)] = spot.reference;
+                    }
+                });
+            };
             if (data && Array.isArray(data)) {
-                data.forEach(spot => {
-                    if (spot.activator && spot.reference) {
-                        newCache[spot.activator.toUpperCase()] = spot.reference;
-                    }
-                });
+                processSpots(data);
             } else if (data && data.data && Array.isArray(data.data)) {
-                // sometimes wrapped in data
-                data.data.forEach(spot => {
-                    if (spot.activator && spot.reference) {
-                        newCache[spot.activator.toUpperCase()] = spot.reference;
-                    }
-                });
+                processSpots(data.data);
             }
             window.potaCache = newCache;
         }
@@ -892,11 +896,11 @@ setInterval(fetchPotaSpots, 120000);
 
 window.getPotaTagHTML = function(call, reason) {
     if (!call) return "";
-    call = call.toUpperCase();
+    const baseCall = window.getBaseCall(call);
     
     // Method B: Check API cache
-    if (window.potaCache[call]) {
-        return `<span class="tag pota">POTA ${window.potaCache[call]}</span>`;
+    if (window.potaCache[baseCall]) {
+        return `<span class="tag pota">POTA ${window.potaCache[baseCall]}</span>`;
     }
     
     // Method A: Check reason/message text for CQ POTA
