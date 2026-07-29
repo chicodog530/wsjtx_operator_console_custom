@@ -276,7 +276,7 @@ def verify_tqsl(path: str = Form("")):
 @app.post("/api/psk-refresh")
 async def psk_refresh(minutes: int = 60):
     assistant.settings.psk_timeframe_minutes = minutes
-    assistant.store.save()
+    assistant.settings_store.save()
     await assistant.refresh_psk_reporter(minutes)
     return assistant.psk
 
