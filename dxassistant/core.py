@@ -986,9 +986,10 @@ class DxAssistant:
             try:
                 def _check():
                     try:
-                        local = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
-                        branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], text=True).strip()
-                        remote_out = subprocess.check_output(['git', 'ls-remote', 'origin', branch], text=True).strip()
+                        repo_dir = str(Path(__file__).parent.parent)
+                        local = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True, cwd=repo_dir).strip()
+                        branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], text=True, cwd=repo_dir).strip()
+                        remote_out = subprocess.check_output(['git', 'ls-remote', 'origin', branch], text=True, cwd=repo_dir).strip()
                         if remote_out:
                             remote = remote_out.split()[0]
                             return local != remote, branch
