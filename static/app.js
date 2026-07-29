@@ -387,7 +387,7 @@ let wfViewCenter=0.5,wfRowAccumulator=0,wfDragging=false,wfDragStartX=0,wfDragSt
 const WF_SETTINGS_KEY="wsjtx-operator-console.waterfall.v1";
 const WF_DEFAULTS={
   speed:65,zoom:1,center:0.5,followRx:false,palette:"classic",
-  floor:-120,autoFloor:true,ceiling:-45,average:0.55,peak:0.82
+  floor:-120,autoFloor:true,ceiling:-45,average:0.55,peak:0.82,drive:0
 };
 
 function wfLoadPreferences(){
@@ -403,6 +403,7 @@ function wfLoadPreferences(){
   $("waterfallCeiling").value=p.ceiling;
   $("waterfallAverage").value=p.average;
   $("waterfallPeakHold").value=p.peak;
+  $("waterfallDrive").value=p.drive;
   wfViewCenter=Math.max(0,Math.min(1,Number(p.center)||.5));
 }
 function wfSavePreferences(){
@@ -416,7 +417,8 @@ function wfSavePreferences(){
     autoFloor:$("waterfallAutoFloor").checked,
     ceiling:Number($("waterfallCeiling").value),
     average:Number($("waterfallAverage").value),
-    peak:Number($("waterfallPeakHold").value)
+    peak:Number($("waterfallPeakHold").value),
+    drive:Number($("waterfallDrive").value)
   };
   try{localStorage.setItem(WF_SETTINGS_KEY,JSON.stringify(p))}catch{}
 }
@@ -637,7 +639,10 @@ function setupWaterfall(){
 async function loadAudioDevices(){
   const r=await fetch("/api/audio/devices"),j=await r.json(),sel=$("audioDevice");
   sel.innerHTML='<option value="-1">Default audio input</option>'+j.devices.map(d=>`<option value="${d.id}">${esc(d.name)} (${d.channels} ch)</option>`).join("");
-  if(state?.settings?.audio_device!=null)sel.value=String(state.settings.audio_device);
+  const savedDev = localStorage.getItem("wsjtx_audio_device");
+  if(savedDev !== null) sel.value = savedDev;
+  else if(state?.settings?.audio_device!=null)sel.value=String(state.settings.audio_device);
+  sel.addEventListener("change", () => localStorage.setItem("wsjtx_audio_device", sel.value));
   if(!j.status.available)setText("waterfallStatus",j.status.error||"Audio support unavailable");
   else if(j.status.running){setText("waterfallStatus",`Capturing ${j.status.device_name} at ${j.status.sample_rate} Hz native rate`);connectWaterfallSocket()}
   setText("audioHealth",j.status.recovering?"Reconnecting audio…":`Drops ${j.status.dropped_blocks||0} · rejected ${j.status.rejected_frames||0}`);
