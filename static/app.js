@@ -400,7 +400,16 @@ window.saveCheckboxState = () => {
 };
 
 ['optBest','optFar','optStrong','optNew','optBand','optWanted','optPota','voiceToggle'].forEach(id=>$(id)?.addEventListener('change',()=>{window.saveCheckboxState();state&&render(state)}));document.querySelectorAll('.continent-filter').forEach(x=>x.addEventListener('change',()=>{window.saveCheckboxState();state&&render(state)}));
-$('pskRefresh').onclick=async()=>{const m=$('pskTimeframe')?.value||60;setText('pskStatus','Refreshing...');try{await fetch(`/api/psk-refresh?minutes=${m}`,{method:'POST'})}catch(e){setText('pskStatus','Refresh failed')}};
+$("pskRefresh").onclick=async()=>{
+  const m=$("pskTimeframe")?.value||60;
+  setText("pskStatus","Refreshing...");
+  try{await fetch(`/api/psk-refresh?minutes=${m}`,{method:"POST"})}catch(e){setText("pskStatus","Refresh failed")}
+};
+$("pskTimeframe").onchange=async(e)=>{
+  const fd = new FormData();
+  fd.append("psk_timeframe_minutes", e.target.value);
+  await fetch("/api/settings",{method:"POST",body:fd});
+};
 setupMaps();connect();fetch("/api/status").then(r=>r.json()).then(render);
 
 setInterval(() => {
