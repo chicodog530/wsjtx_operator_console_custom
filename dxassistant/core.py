@@ -99,6 +99,7 @@ class DxAssistant:
         asyncio.create_task(self.broadcast_loop())
         asyncio.create_task(self.monitor_qrz_sync())
         asyncio.create_task(self.monitor_lotw_sync())
+        asyncio.create_task(self.monitor_updates())
 
     async def stop(self) -> None:
         if self.wsjtx_transport:
@@ -978,3 +979,27 @@ class DxAssistant:
             self.last_adif_mtime = mtime
             self.import_adif(path)
             await self.broadcast()
+
+    async def monitor_updates(self) -> None:
+        import subprocess
+        while True:
+            try:
+                def _check():
+                    try:
+                        local = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+                        branch = subprocess.check_output(['git', 'rev-parse', '--abbrev-ref', 'HEAD'], text=True).strip()
+                        remote_out = subprocess.check_output(['git', 'ls-remote', 'origin', branch], text=True).strip()
+                        if remote_out:
+                            remote = remote_out.split()[0]
+                            return local != remote, branch
+                        return False, branch
+                    except:
+                        return False, ''
+                update_available, branch = await asyncio.to_thread(_check)
+                if update_available:
+                    self.status['update_available'] = True
+                    self.status['update_branch'] = branch
+                    await self.broadcast()
+            except Exception:
+                pass
+            await asyncio.sleep(3600)

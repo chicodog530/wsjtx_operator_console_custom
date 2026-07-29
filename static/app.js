@@ -125,6 +125,11 @@ advisorOverride=a;
   renderOpening(snapshot.propagation);renderWanted(snapshot.wanted);renderActivity(snapshot.recent);renderRadar(snapshot.radar);renderAwards(snapshot);renderPsk(snapshot.psk_reporter||{});
   drawMap(dashMap,snapshot.recent,dashMarkers,dashPaths,true);drawMap(mainMap,snapshot.recent,mapMarkers,pathLayers,false);
   populateSettings(snapshot.settings);maybeAlert(a);
+
+  if (snapshot.update_available && $("updateBanner")) {
+      $("updateBanner").style.display = "flex";
+      if($("updateBranchName")) $("updateBranchName").textContent = snapshot.update_branch || "master";
+  }
 }
 
 function renderAdvisorQueue(rows){
@@ -225,10 +230,28 @@ function renderAwards(s){
   const bands=s.awards?.bands||[],max=Math.max(1,...bands.map(x=>x.worked));$("bandAwards").innerHTML=bands.length?bands.map(b=>`<div class="award-row"><strong>${esc(b.band)}</strong><div class="track"><i style="width:${b.worked/max*100}%"></i></div><span>${b.worked} / ${b.confirmed}</span></div>`).join(""):`<div class="muted">Import an ADIF log.</div>`;
   $("topEntities").innerHTML=(s.top_entities||[]).map((e,i)=>`<div class="entity-rank"><strong>${i+1}</strong><div>${e.flag||""} ${esc(e.entity_name)}<div class="muted">${esc(e.continent||"")}</div></div><strong>${e.heard}</strong></div>`).join("");
 }
-function populateSettings(s){if(!s)return;setText("settingsResult","");$("settingsCallsign").value=s.callsign||"";$("settingsGrid").value=s.grid||"";$("settingsUnit").value=s.distance_unit||"mi";$("settingsAdif").value=s.adif_path||"";$("notificationScore").value=s.notification_score??110;$("voiceScore").value=s.voice_score??120;
-  $("ntpServer").value=s.ntp_server||"time.google.com";$("timeWarning").value=s.time_warning_seconds??1.0;$("settingsQrzKey").value=s.qrz_api_key||"";$("settingsQrzAuto").checked=s.qrz_auto_log||false;
-  $("settingsLotwPath").value=s.lotw_tqsl_path||"C:\\Program Files (x86)\\TrustedQSL\\tqsl.exe";$("settingsLotwLoc").value=s.lotw_station_location||"";$("settingsLotwPass").value=s.lotw_password||"";$("settingsLotwAuto").checked=s.lotw_auto_log||false;$("settingsAudioAuto").checked=s.audio_auto_start||false;
-  if($("pskTimeframe"))$("pskTimeframe").value=s.psk_timeframe_minutes||60;
+function populateSettings(s){
+  if(!s)return;
+  const update = (id, val) => { const el = $(id); if(el && document.activeElement !== el) el.value = val; };
+  const updateCb = (id, val) => { const el = $(id); if(el && document.activeElement !== el) el.checked = val; };
+  
+  update("settingsCallsign", s.callsign||"");
+  update("settingsGrid", s.grid||"");
+  update("settingsUnit", s.distance_unit||"mi");
+  update("settingsAdif", s.adif_path||"");
+  update("notificationScore", s.notification_score??110);
+  update("voiceScore", s.voice_score??120);
+  update("ntpServer", s.ntp_server||"time.google.com");
+  update("timeWarning", s.time_warning_seconds??1.0);
+  update("settingsQrzKey", s.qrz_api_key||"");
+  update("settingsLotwPath", s.lotw_tqsl_path||"C:\\Program Files (x86)\\TrustedQSL\\tqsl.exe");
+  update("settingsLotwLoc", s.lotw_station_location||"");
+  update("settingsLotwPass", s.lotw_password||"");
+  update("pskTimeframe", s.psk_timeframe_minutes||60);
+  
+  updateCb("settingsQrzAuto", s.qrz_auto_log||false);
+  updateCb("settingsLotwAuto", s.lotw_auto_log||false);
+  updateCb("settingsAudioAuto", s.audio_auto_start||false);
 }
 
 function renderPsk(p){
