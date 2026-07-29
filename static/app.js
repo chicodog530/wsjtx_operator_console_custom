@@ -946,7 +946,7 @@ function renderPotaTab(spots) {
     const scored = spots.map(spot => {
         let score = 0;
         let band = "";
-        let freq = parseFloat(spot.frequencies) * 1000000 || 0;
+        let freq = parseFloat(spot.frequency) * 1000 || 0;
         if (freq >= 7000000 && freq <= 7300000) band = "40m";
         else if (freq >= 14000000 && freq <= 14350000) band = "20m";
         else if (freq >= 10100000 && freq <= 10150000) band = "30m";
@@ -974,7 +974,7 @@ function renderPotaTab(spots) {
         return `<tr>
             <td><strong>${esc(spot.activator)}</strong></td>
             <td>${esc(spot.reference)}</td>
-            <td>${esc(spot.frequencies || "")}</td>
+            <td>${esc(spot.frequency || "")}</td>
             <td>${esc(spot.mode || "")}</td>
             <td>${esc(spot.locationDesc || "")}</td>
             <td>${esc(spot.comments || "")}</td>
