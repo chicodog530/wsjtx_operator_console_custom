@@ -815,10 +815,10 @@ class DxAssistant:
         try:
             reports = await self.psk_client.who_heard_me(self.settings.callsign, minutes)
             self.psk["reports"] = reports
-            self.psk["last_refresh"] = utc_now()
         except Exception as exc:
             self.psk["error"] = str(exc)
         finally:
+            self.psk["last_refresh"] = utc_now()
             self.psk["refreshing"] = False
             await self.broadcast()
 
@@ -992,16 +992,20 @@ class DxAssistant:
                         remote_out = subprocess.check_output(['git', 'ls-remote', 'origin', branch], text=True, cwd=repo_dir).strip()
                         if remote_out:
                             remote = remote_out.split()[0]
-                            return local != remote, branch
-                        return False, branch
+                            return True, local != remote, branch
+                        return True, False, branch
                     except Exception as e:
-                        return False, str(e)
-                update_available, branch = await asyncio.to_thread(_check)
-                if update_available:
-                    self.status['update_available'] = True
-                    self.status['update_branch'] = branch
+                        return False, False, str(e)
+                success, update_available, info = await asyncio.to_thread(_check)
+                if success:
+                    if update_available:
+                        self.status['update_available'] = True
+                        self.status['update_branch'] = info
+                    else:
+                        self.status['update_available'] = False
+                        self.status.pop('update_error', None)
                 else:
-                    self.status['update_error'] = branch
+                    self.status['update_error'] = info
                 await self.broadcast()
             except Exception:
                 pass
