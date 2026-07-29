@@ -239,24 +239,34 @@ class DxAssistant:
         if self.best_target is None or priority >= self.best_target["priority"]:
             self.best_target = row
 
-        self.db.execute(
-            """INSERT INTO decodes(
-                heard_at, wsjtx_time_ms, snr, delta_time, delta_frequency,
-                mode, message, call, grid, entity_id, entity_name, continent,
-                cq_zone, itu_zone, flag, distance, bearing, priority, reason,
-                wanted, worked_call, worked_entity, confirmed_entity,
-                needed_on_band, band
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-            (
-                row["heard_at"], row["time_ms"], row["snr"], row["delta_time"],
-                row["delta_frequency"], row["mode"], row["message"], row["call"],
-                row["grid"], row["entity_id"], row["entity_name"], row["continent"],
-                row["cq_zone"], row["itu_zone"], row["flag"], row["distance"],
-                row["bearing"], row["priority"], row["reason"], int(row["wanted"]),
-                int(row["worked_call"]), int(row["worked_entity"]),
-                int(row["confirmed_entity"]), int(row["needed_on_band"]), row["band"],
-            ),
-        )
+        db_row = {
+            "heard_at": row["heard_at"],
+            "wsjtx_time_ms": row["time_ms"],
+            "snr": row["snr"],
+            "delta_time": row["delta_time"],
+            "delta_frequency": row["delta_frequency"],
+            "mode": row["mode"],
+            "message": row["message"],
+            "call": row["call"],
+            "grid": row["grid"],
+            "entity_id": row["entity_id"],
+            "entity_name": row["entity_name"],
+            "continent": row["continent"],
+            "cq_zone": row["cq_zone"],
+            "itu_zone": row["itu_zone"],
+            "flag": row["flag"],
+            "distance": row["distance"],
+            "bearing": row["bearing"],
+            "priority": row["priority"],
+            "reason": row["reason"],
+            "wanted": int(row["wanted"]),
+            "worked_call": int(row["worked_call"]),
+            "worked_entity": int(row["worked_entity"]),
+            "confirmed_entity": int(row["confirmed_entity"]),
+            "needed_on_band": int(row["needed_on_band"]),
+            "band": row["band"]
+        }
+        self.db.log_decode(db_row)
         await self.broadcast()
 
     @staticmethod
@@ -754,7 +764,7 @@ class DxAssistant:
             return False, "No target is available"
         if self.status.get("transmitting"):
             return False, "WSJT-X is already transmitting"
-        for row in self.recent:
+        for row in reversed(self.recent):
             if row.get("call") != call:
                 continue
             age = asyncio.get_running_loop().time() - row["_received_monotonic"]
