@@ -151,7 +151,20 @@
   </section>
 
   <section class="panel psk-panel">
-    <div class="psk-head"><div><div class="panel-title">PSK Reporter — Who heard me</div><div id="pskStatus" class="muted">Waiting for first retrieval</div></div><button id="pskRefresh">Refresh now</button></div>
+    <div class="psk-head">
+      <div><div class="panel-title">PSK Reporter – Who heard me</div><div id="pskStatus" class="muted">Waiting for first retrieval</div></div>
+      <div style="display:flex; gap:0.5rem; align-items:center;">
+        <select id="pskTimeframe" style="padding:4px 8px; font-size:0.85rem; border-radius:4px; background:var(--bg-elevated); color:var(--text-main); border:1px solid var(--border);">
+          <option value="15">Last 15m</option>
+          <option value="30">Last 30m</option>
+          <option value="60" selected>Last 1 hr</option>
+          <option value="120">Last 2 hrs</option>
+          <option value="360">Last 6 hrs</option>
+          <option value="1440">Last 24 hrs</option>
+        </select>
+        <button id="pskRefresh">Refresh now</button>
+      </div>
+    </div>
     <div class="psk-stats"><div><span>Receivers</span><strong id="pskCount">0</strong></div><div><span>Farthest</span><strong id="pskFarthest">--</strong></div><div><span>Best report</span><strong id="pskBest">--</strong></div><div><span>Last refresh</span><strong id="pskLast">--</strong></div></div>
     <div class="table-wrap"><table><thead><tr><th>Receiver</th><th>Grid</th><th>Mode</th><th>Frequency</th><th>SNR</th><th>Age</th><th>Distance</th></tr></thead><tbody id="pskRows"></tbody></table></div>
   </section>

@@ -227,7 +227,9 @@ function renderAwards(s){
 }
 function populateSettings(s){if(!s)return;setText("settingsResult","");$("settingsCallsign").value=s.callsign||"";$("settingsGrid").value=s.grid||"";$("settingsUnit").value=s.distance_unit||"mi";$("settingsAdif").value=s.adif_path||"";$("notificationScore").value=s.notification_score??110;$("voiceScore").value=s.voice_score??120;
   $("ntpServer").value=s.ntp_server||"time.google.com";$("timeWarning").value=s.time_warning_seconds??1.0;$("settingsQrzKey").value=s.qrz_api_key||"";$("settingsQrzAuto").checked=s.qrz_auto_log||false;
-  $("settingsLotwPath").value=s.lotw_tqsl_path||"C:\\Program Files (x86)\\TrustedQSL\\tqsl.exe";$("settingsLotwLoc").value=s.lotw_station_location||"";$("settingsLotwPass").value=s.lotw_password||"";$("settingsLotwAuto").checked=s.lotw_auto_log||false;$("settingsAudioAuto").checked=s.audio_auto_start||false;}
+  $("settingsLotwPath").value=s.lotw_tqsl_path||"C:\\Program Files (x86)\\TrustedQSL\\tqsl.exe";$("settingsLotwLoc").value=s.lotw_station_location||"";$("settingsLotwPass").value=s.lotw_password||"";$("settingsLotwAuto").checked=s.lotw_auto_log||false;$("settingsAudioAuto").checked=s.audio_auto_start||false;
+  if($("pskTimeframe"))$("pskTimeframe").value=s.psk_timeframe_minutes||60;
+}
 
 function renderPsk(p){
   const rows=p.reports||[];setText('pskCount',rows.length);setText('pskLast',p.last_refresh?p.last_refresh.substring(11,19):'--');
@@ -374,7 +376,7 @@ window.saveCheckboxState = () => {
 };
 
 ['optBest','optFar','optStrong','optNew','optBand','optWanted','optPota','voiceToggle'].forEach(id=>$(id)?.addEventListener('change',()=>{window.saveCheckboxState();state&&render(state)}));document.querySelectorAll('.continent-filter').forEach(x=>x.addEventListener('change',()=>{window.saveCheckboxState();state&&render(state)}));
-$('pskRefresh').onclick=async()=>{setText('pskStatus','Refreshing…');try{await fetch('/api/psk-refresh?minutes=60',{method:'POST'})}catch(e){setText('pskStatus','Refresh failed')}};
+$('pskRefresh').onclick=async()=>{const m=$('pskTimeframe')?.value||60;setText('pskStatus','Refreshing...');try{await fetch(`/api/psk-refresh?minutes=${m}`,{method:'POST'})}catch(e){setText('pskStatus','Refresh failed')}};
 setupMaps();connect();fetch("/api/status").then(r=>r.json()).then(render);
 
 

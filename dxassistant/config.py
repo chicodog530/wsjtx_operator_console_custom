@@ -18,6 +18,7 @@ class Settings:
     auto_import_adif: bool = True
     psk_reporter_enabled: bool = True
     psk_reporter_interval_minutes: int = 5
+    psk_timeframe_minutes: int = 60
     reply_max_age_minutes: int = 20
     notification_score: int = 110
     voice_score: int = 120

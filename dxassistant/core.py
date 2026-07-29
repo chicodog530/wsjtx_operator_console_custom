@@ -824,7 +824,7 @@ class DxAssistant:
     async def monitor_psk_reporter(self) -> None:
         await asyncio.sleep(2)
         while True:
-            await self.refresh_psk_reporter(60)
+            await self.refresh_psk_reporter(self.settings.psk_timeframe_minutes)
             await asyncio.sleep(max(60, self.settings.psk_reporter_interval_minutes * 60))
 
     def call_best(self) -> tuple[bool, str]:
