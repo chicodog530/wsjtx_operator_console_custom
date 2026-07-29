@@ -118,6 +118,7 @@ advisorOverride=a;
   setText("statConfirmed",snapshot.stats.dxcc_confirmed.toLocaleString());setText("statWanted",snapshot.stats.wanted.toLocaleString());
   advisorQueue=rankedAdvisors(snapshot).slice(0,5);
   renderAdvisorQueue(advisorQueue);
+  if (window.potaSpotsRaw) renderPotaTab(window.potaSpotsRaw);
   renderBandAdvisor(snapshot.band_advisor||{});
   renderStationHealth(snapshot.health||[]);
   renderTimeStatus(snapshot.time||{});
@@ -890,21 +891,20 @@ async function fetchPotaSpots() {
         if (response.ok) {
             const data = await response.json();
             const newCache = {};
-            if (data && Array.isArray(data)) {
-                data.forEach(spot => {
-                    if (spot.activator && spot.reference) {
-                        newCache[spot.activator.toUpperCase()] = spot.reference;
+            const rawSpots = [];
+            const arr = Array.isArray(data) ? data : (data && Array.isArray(data.data) ? data.data : []);
+            arr.forEach(spot => {
+                if (spot.activator && spot.reference) {
+                    newCache[spot.activator.toUpperCase()] = spot.reference;
+                    const mode = (spot.mode || "").toUpperCase();
+                    if (mode.includes("FT8") || mode.includes("FT4")) {
+                        rawSpots.push(spot);
                     }
-                });
-            } else if (data && data.data && Array.isArray(data.data)) {
-                // sometimes wrapped in data
-                data.data.forEach(spot => {
-                    if (spot.activator && spot.reference) {
-                        newCache[spot.activator.toUpperCase()] = spot.reference;
-                    }
-                });
-            }
+                }
+            });
             window.potaCache = newCache;
+            window.potaSpotsRaw = rawSpots;
+            if (state) renderPotaTab(rawSpots);
         }
     } catch (e) {
         console.error("Error fetching POTA spots:", e);
@@ -932,4 +932,54 @@ window.getPotaTagHTML = function(call, reason) {
     return "";
 };
 
-window.addEventListener(beforeunload, () => { if (socket) { socket.onclose = null; socket.close(); } if (typeof wfSocket !== undefined && wfSocket) { wfSocket.onclose = null; wfSocket.close(); } });
+window.addEventListener("beforeunload", () => { if (socket) { socket.onclose = null; socket.close(); } if (typeof wfSocket !== "undefined" && wfSocket) { wfSocket.onclose = null; wfSocket.close(); } });
+
+function renderPotaTab(spots) {
+    const tbody = document.getElementById("potaSpotsTable");
+    if (!tbody) return;
+    if (!spots || spots.length === 0) {
+        tbody.innerHTML = "<tr><td colspan='7' class='muted'>No FT8/FT4 POTA spots currently active.</td></tr>";
+        return;
+    }
+    
+    // Score and sort spots
+    const scored = spots.map(spot => {
+        let score = 0;
+        let band = "";
+        let freq = parseFloat(spot.frequencies) * 1000000 || 0;
+        if (freq >= 7000000 && freq <= 7300000) band = "40m";
+        else if (freq >= 14000000 && freq <= 14350000) band = "20m";
+        else if (freq >= 10100000 && freq <= 10150000) band = "30m";
+        else if (freq >= 18068000 && freq <= 18168000) band = "17m";
+        else if (freq >= 21000000 && freq <= 21450000) band = "15m";
+        else if (freq >= 24890000 && freq <= 24990000) band = "12m";
+        else if (freq >= 28000000 && freq <= 29700000) band = "10m";
+        else if (freq >= 3500000 && freq <= 4000000) band = "80m";
+        
+        if (state && state.band_summary) {
+            const summary = state.band_summary.find(b => b.band === band);
+            if (summary && summary.decodes > 0) {
+                score += 50; // Active band
+                score += summary.stations * 2;
+                score += summary.best_snr;
+            }
+        }
+        return { ...spot, score };
+    });
+    
+    scored.sort((a, b) => b.score - a.score);
+    
+    tbody.innerHTML = scored.map((spot, idx) => {
+        const prob = spot.score > 60 ? "<span class='tag hot'>HIGH</span>" : (spot.score > 20 ? "<span class='tag'>MEDIUM</span>" : "<span class='tag new'>LOW</span>");
+        return `<tr>
+            <td><strong>${esc(spot.activator)}</strong></td>
+            <td>${esc(spot.reference)}</td>
+            <td>${esc(spot.frequencies || "")}</td>
+            <td>${esc(spot.mode || "")}</td>
+            <td>${esc(spot.locationDesc || "")}</td>
+            <td>${esc(spot.comments || "")}</td>
+            <td>${prob}</td>
+        </tr>`;
+    }).join("");
+}
+

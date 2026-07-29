@@ -11,6 +11,7 @@
   <div class="brand"><div class="eyebrow">WSJT-X STATION INTELLIGENCE</div><h1>WSJT-X Operator Console</h1></div>
   <nav>
     <button class="nav-btn active" data-view="dashboard">Dashboard</button>
+    <button class="nav-btn" data-view="pota">POTA Spots</button>
     <button class="nav-btn" data-view="activity">Activity</button>
     <button class="nav-btn" data-view="map">Map</button>
     <button class="nav-btn" data-view="propagation">Propagation</button>
@@ -217,10 +218,35 @@
   </section>
 </section>
 
-<section id="view-activity" class="view">
-  <section class="page-heading"><div><div class="eyebrow">AIR-TRAFFIC VIEW</div><h2>Live activity</h2></div><input id="activityFilter" placeholder="Filter call, entity, grid"></section>
-  <section id="activityCards" class="activity-grid"></section>
-</section>
+  <section id="view-activity" class="view">
+    <section class="page-heading"><div><div class="eyebrow">AIR-TRAFFIC VIEW</div><h2>Live activity</h2></div><input id="activityFilter" placeholder="Filter call, entity, grid"></section>
+    <section id="activityCards" class="activity-grid"></section>
+  </section>
+  
+  <section id="view-pota" class="view">
+    <section class="page-heading">
+      <div><div class="eyebrow">PARKS ON THE AIR</div><h2>Active POTA Spots</h2></div>
+      <div class="muted">Live digital mode spots, sorted by contact probability</div>
+    </section>
+    <section class="panel">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Activator</th>
+            <th>Reference</th>
+            <th>Freq</th>
+            <th>Mode</th>
+            <th>Location</th>
+            <th>Comments</th>
+            <th>Probability</th>
+          </tr>
+        </thead>
+        <tbody id="potaSpotsTable">
+          <tr><td colspan="7" class="muted">Fetching spots...</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
 
 <section id="view-map" class="view">
   <section class="page-heading"><div><div class="eyebrow">GLOBAL VIEW</div><h2>Interactive DX map</h2></div>

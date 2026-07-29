@@ -8,6 +8,8 @@ from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+import urllib.request
+import json
 
 from .adif import read_adif
 from .config import SettingsStore
@@ -44,6 +46,7 @@ class DxAssistant:
         self.clients: set[Any] = set()
         self.qrz_session_count = 0
         self.lotw_session_count = 0
+        self.pota_active_calls: set[str] = set()
         self.status: dict[str, Any] = {
             "connected": False,
             "last_packet": None,
@@ -90,6 +93,7 @@ class DxAssistant:
         self.db.log_event("INFO", f"Listening for WSJT-X UDP on {self.settings.udp_port}")
         asyncio.create_task(self.monitor_adif())
         asyncio.create_task(self.monitor_time())
+        asyncio.create_task(self._pota_fetch_loop())
         if self.settings.psk_reporter_enabled:
             asyncio.create_task(self.monitor_psk_reporter())
         asyncio.create_task(self.broadcast_loop())
@@ -144,6 +148,14 @@ class DxAssistant:
                         qso_date=record.get("QSO_DATE", ""),
                         time_on=record.get("TIME_ON", "")
                     )
+                    
+                    if call in self.pota_active_calls:
+                        pota_log = self.user_data_dir / "pota_log.adi"
+                        try:
+                            with open(pota_log, "a", encoding="utf-8") as f:
+                                f.write(message["logged_adif"] + "\n")
+                        except Exception as exc:
+                            self.db.log_event("ERROR", f"Failed to append to POTA log: {exc}")
                     
                     new_recent = [r for r in self.recent if r.get("call") != call]
                     self.recent.clear()
@@ -533,6 +545,24 @@ class DxAssistant:
                 "recent decode history and PSK Reporter reports of where your own signal was heard."
             ),
         }
+
+    async def _pota_fetch_loop(self) -> None:
+        while True:
+            try:
+                def fetch():
+                    req = urllib.request.Request("https://api.pota.app/spot/activator", headers={"User-Agent": "Mozilla/5.0"})
+                    with urllib.request.urlopen(req, timeout=10) as resp:
+                        return json.loads(resp.read().decode())
+                data = await asyncio.to_thread(fetch)
+                new_set = set()
+                arr = data if isinstance(data, list) else (data.get("data", []) if isinstance(data, dict) else [])
+                for spot in arr:
+                    if spot.get("activator"):
+                        new_set.add(spot["activator"].upper())
+                self.pota_active_calls = new_set
+            except Exception as e:
+                self.db.log_event("WARNING", f"Background POTA fetch failed: {e}")
+            await asyncio.sleep(120)
 
     async def monitor_qrz_sync(self) -> None:
         import urllib.request
