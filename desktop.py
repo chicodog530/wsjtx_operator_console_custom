@@ -17,8 +17,9 @@ def run_server(port):
     uvicorn.run(app, host="127.0.0.1", port=port, log_level="warning")
 
 if __name__ == "__main__":
-    # Get a random free port so we don't conflict with other services
-    port = get_free_port()
+    # Use a fixed port to ensure the origin remains the same across sessions.
+    # This is critical for localStorage persistence in the browser/webview.
+    port = 5231
 
     # Start the server in a daemon thread so it dies when the window closes
     server_thread = threading.Thread(target=run_server, args=(port,), daemon=True)
