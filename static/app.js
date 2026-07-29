@@ -255,7 +255,7 @@ function populateSettings(s){
 }
 
 function renderPsk(p){
-  window.lastPskRefresh = p.last_refresh ? new Date(p.last_refresh + (p.last_refresh.includes('Z')?'':'Z')).getTime() : null;
+  window.lastPskRefresh = p.last_refresh ? new Date(p.last_refresh).getTime() : null;
   const rows=p.reports||[];setText('pskCount',rows.length);setText('pskLast',p.last_refresh?p.last_refresh.substring(11,19):'--');
   setText('pskStatus',p.refreshing?'Refreshing…':(p.error?`Error: ${p.error}`:(rows.length?'PSK Reporter data loaded':'No reports in selected window')));
   const withDist=rows.map(r=>({...r,_distance:gridDistance(state.settings.grid,r.receiver_grid)}));
