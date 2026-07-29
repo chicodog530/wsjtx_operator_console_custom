@@ -227,7 +227,7 @@ function renderAwards(s){
 }
 function populateSettings(s){if(!s)return;setText("settingsResult","");$("settingsCallsign").value=s.callsign||"";$("settingsGrid").value=s.grid||"";$("settingsUnit").value=s.distance_unit||"mi";$("settingsAdif").value=s.adif_path||"";$("notificationScore").value=s.notification_score??110;$("voiceScore").value=s.voice_score??120;
   $("ntpServer").value=s.ntp_server||"time.google.com";$("timeWarning").value=s.time_warning_seconds??1.0;$("settingsQrzKey").value=s.qrz_api_key||"";$("settingsQrzAuto").checked=s.qrz_auto_log||false;
-  $("settingsLotwPath").value=s.lotw_tqsl_path||"C:\\Program Files (x86)\\TrustedQSL\\tqsl.exe";$("settingsLotwLoc").value=s.lotw_station_location||"";$("settingsLotwPass").value=s.lotw_password||"";$("settingsLotwAuto").checked=s.lotw_auto_log||false;}
+  $("settingsLotwPath").value=s.lotw_tqsl_path||"C:\\Program Files (x86)\\TrustedQSL\\tqsl.exe";$("settingsLotwLoc").value=s.lotw_station_location||"";$("settingsLotwPass").value=s.lotw_password||"";$("settingsLotwAuto").checked=s.lotw_auto_log||false;$("settingsAudioAuto").checked=s.audio_auto_start||false;}
 
 function renderPsk(p){
   const rows=p.reports||[];setText('pskCount',rows.length);setText('pskLast',p.last_refresh?p.last_refresh.substring(11,19):'--');
@@ -351,7 +351,7 @@ function updateClock(){const n=new Date();setText("utcClock",n.toISOString().sub
 setInterval(updateClock,100);
 function connect(){const proto=location.protocol==="https:"?"wss":"ws";socket=new WebSocket(`${proto}://${location.host}/ws`);socket.onmessage=e=>render(JSON.parse(e.data));socket.onclose=()=>setTimeout(connect,1500);socket.onerror=()=>socket.close()}
 
-const checkboxIds = ['optBest','optFar','optStrong','optNew','optBand','optWanted','optPota'];
+const checkboxIds = ['optBest','optFar','optStrong','optNew','optBand','optWanted','optPota','voiceToggle'];
 
 // Load state
 checkboxIds.forEach(id => {
@@ -373,7 +373,7 @@ window.saveCheckboxState = () => {
     });
 };
 
-['optBest','optFar','optStrong','optNew','optBand','optWanted','optPota'].forEach(id=>$(id)?.addEventListener('change',()=>{window.saveCheckboxState();state&&render(state)}));document.querySelectorAll('.continent-filter').forEach(x=>x.addEventListener('change',()=>{window.saveCheckboxState();state&&render(state)}));
+['optBest','optFar','optStrong','optNew','optBand','optWanted','optPota','voiceToggle'].forEach(id=>$(id)?.addEventListener('change',()=>{window.saveCheckboxState();state&&render(state)}));document.querySelectorAll('.continent-filter').forEach(x=>x.addEventListener('change',()=>{window.saveCheckboxState();state&&render(state)}));
 $('pskRefresh').onclick=async()=>{setText('pskStatus','Refreshing…');try{await fetch('/api/psk-refresh?minutes=60',{method:'POST'})}catch(e){setText('pskStatus','Refresh failed')}};
 setupMaps();connect();fetch("/api/status").then(r=>r.json()).then(render);
 
@@ -607,20 +607,7 @@ function setupWaterfall(){
   c.addEventListener("mouseleave",()=>{
     $("waterfallCursor").style.display="none";$("waterfallCursorLabel").style.display="none";
   });
-  c.addEventListener("wheel",e=>{
-    e.preventDefault();
-    if(e.shiftKey){
-      wfViewCenter=wfClampCenter(wfViewCenter+(e.deltaY>0?.08:-.08)*wfViewSpan());
-    }else{
-      const r=c.getBoundingClientRect(),pointer=(e.clientX-r.left)/r.width;
-      const before=wfViewStart()+pointer*wfViewSpan();
-      let z=wfZoom()*(e.deltaY<0?1.25:.8);z=Math.max(1,Math.min(8,z));
-      $("waterfallZoom").value=String(Math.round(z*4)/4);
-      const newSpan=wfViewSpan();
-      wfViewCenter=before+(0.5-pointer)*newSpan;
-    }
-    wfViewChanged();
-  },{passive:false});
+  
   c.addEventListener("click",e=>{if(Math.abs(e.clientX-wfDragStartX)<4)wfSelect(e,false)});
   c.addEventListener("dblclick",e=>wfSelect(e,true));
   $("waterfallMinimap").addEventListener("click",e=>{

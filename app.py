@@ -234,6 +234,7 @@ async def save_settings(
     voice_score: int = Form(120),
     ntp_server: str = Form("time.google.com"),
     time_warning_seconds: float = Form(1.0),
+    audio_auto_start: bool = Form(False),
     qrz_api_key: str = Form(""),
     qrz_auto_log: bool = Form(False),
     lotw_auto_log: bool = Form(False),
@@ -249,6 +250,7 @@ async def save_settings(
     assistant.settings.voice_score = max(0, min(voice_score, 300))
     assistant.settings.ntp_server = ntp_server.strip() or "time.google.com"
     assistant.settings.time_warning_seconds = max(0.1, min(time_warning_seconds, 5.0))
+    assistant.settings.audio_auto_start = audio_auto_start
     assistant.settings.qrz_api_key = qrz_api_key.strip()
     assistant.settings.qrz_auto_log = qrz_auto_log
     assistant.settings.lotw_auto_log = lotw_auto_log
