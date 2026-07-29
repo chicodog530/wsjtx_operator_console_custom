@@ -126,9 +126,9 @@ advisorOverride=a;
   drawMap(dashMap,snapshot.recent,dashMarkers,dashPaths,true);drawMap(mainMap,snapshot.recent,mapMarkers,pathLayers,false);
   populateSettings(snapshot.settings);maybeAlert(a);
 
-  if (snapshot.update_available && $("updateBanner")) {
+  if (snapshot.status && snapshot.status.update_available && $("updateBanner")) {
       $("updateBanner").style.display = "flex";
-      if($("updateBranchName")) $("updateBranchName").textContent = snapshot.update_branch || "master";
+      if($("updateBranchName")) $("updateBranchName").textContent = snapshot.status.update_branch || "master";
   }
 }
 
