@@ -240,8 +240,10 @@ class Database:
         )
 
     def radar(self, minutes: int = 15) -> list[dict[str, Any]]:
+        if getattr(self, '_cache_radar', None) and time.monotonic() - getattr(self, '_cache_radar_time', 0) < 3.0:
+            return self._cache_radar
         minutes = max(1, min(minutes, 180))
-        return self.query(
+        res = self.query(
             """SELECT entity_id, entity_name, flag, continent,
                       COUNT(DISTINCT call) AS stations,
                       COUNT(*) AS decodes,
@@ -261,6 +263,9 @@ class Database:
                LIMIT 80""",
             (f"-{minutes} minutes",),
         )
+        self._cache_radar = res
+        self._cache_radar_time = time.monotonic()
+        return res
 
     def band_summary(self, minutes: int = 15) -> list[dict[str, Any]]:
         minutes = max(1, min(minutes, 180))
@@ -329,7 +334,9 @@ class Database:
         return {"summary": summary[0] if summary else {}, "bands": bands}
 
     def stats(self) -> dict[str, int]:
-        return {
+        if getattr(self, '_cache_stats', None) and time.monotonic() - getattr(self, '_cache_stats_time', 0) < 3.0:
+            return self._cache_stats
+        res = {
             "decodes": self.scalar("SELECT COUNT(*) FROM decodes") or 0,
             "qsos": self.scalar("SELECT COUNT(*) FROM qso") or 0,
             "dxcc_worked": self.scalar(
@@ -340,3 +347,6 @@ class Database:
             ) or 0,
             "wanted": self.scalar("SELECT COUNT(*) FROM wanted") or 0,
         }
+        self._cache_stats = res
+        self._cache_stats_time = time.monotonic()
+        return res
