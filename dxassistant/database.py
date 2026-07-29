@@ -324,7 +324,7 @@ class Database:
             except Exception:
                 pass
                 
-        self._live_radar_events = kept_events
+
         
         res = []
         for eid, ent in active_entities.items():
