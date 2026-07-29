@@ -931,3 +931,5 @@ window.getPotaTagHTML = function(call, reason) {
     
     return "";
 };
+
+window.addEventListener(beforeunload, () => { if (socket) { socket.onclose = null; socket.close(); } if (typeof wfSocket !== undefined && wfSocket) { wfSocket.onclose = null; wfSocket.close(); } });
