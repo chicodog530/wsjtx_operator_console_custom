@@ -159,7 +159,7 @@ nav { display: flex; gap: 4px; }
 .queue-metrics div { background: var(--bg); padding: 4px; border: 1px solid var(--line); border-radius: 2px; }
 .queue-call-btn { margin-top: 8px; width: 100%; padding: 4px; font-size: 11px; }
 
-.waterfall-wrap { height: 300px; background: #000; border: 1px solid var(--line); }
+.waterfall-wrap { height: 160px; background: #000; border: 1px solid var(--line); }
 .waterfall-toolbar { display: flex; gap: 12px; font-size: 11px; margin: 8px 0; align-items: center; }
 
 /* Scrollbars */
