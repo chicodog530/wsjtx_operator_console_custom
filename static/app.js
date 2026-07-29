@@ -255,6 +255,7 @@ function populateSettings(s){
 }
 
 function renderPsk(p){
+  window.lastPskRefresh = p.last_refresh ? new Date(p.last_refresh + (p.last_refresh.includes('Z')?'':'Z')).getTime() : null;
   const rows=p.reports||[];setText('pskCount',rows.length);setText('pskLast',p.last_refresh?p.last_refresh.substring(11,19):'--');
   setText('pskStatus',p.refreshing?'Refreshing…':(p.error?`Error: ${p.error}`:(rows.length?'PSK Reporter data loaded':'No reports in selected window')));
   const withDist=rows.map(r=>({...r,_distance:gridDistance(state.settings.grid,r.receiver_grid)}));
@@ -401,6 +402,21 @@ window.saveCheckboxState = () => {
 ['optBest','optFar','optStrong','optNew','optBand','optWanted','optPota','voiceToggle'].forEach(id=>$(id)?.addEventListener('change',()=>{window.saveCheckboxState();state&&render(state)}));document.querySelectorAll('.continent-filter').forEach(x=>x.addEventListener('change',()=>{window.saveCheckboxState();state&&render(state)}));
 $('pskRefresh').onclick=async()=>{const m=$('pskTimeframe')?.value||60;setText('pskStatus','Refreshing...');try{await fetch(`/api/psk-refresh?minutes=${m}`,{method:'POST'})}catch(e){setText('pskStatus','Refresh failed')}};
 setupMaps();connect();fetch("/api/status").then(r=>r.json()).then(render);
+
+setInterval(() => {
+  if(!$('pskRefresh') || !window.lastPskRefresh) return;
+  const passed = (Date.now() - window.lastPskRefresh) / 1000;
+  const left = 300 - passed; // 5 minute cooldown
+  if(left > 0) {
+    $('pskRefresh').disabled = true;
+    const m = Math.floor(left / 60);
+    const s = Math.floor(left % 60).toString().padStart(2, '0');
+    $('pskRefresh').textContent = `Wait ${m}:${s}`;
+  } else {
+    $('pskRefresh').disabled = false;
+    $('pskRefresh').textContent = `Refresh now`;
+  }
+}, 1000);
 
 
 // ----- Native browser waterfall (public v1.1 controls/zoom/persistence) -----
