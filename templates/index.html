@@ -4,7 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>WSJT-X Operator Console</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="stylesheet" href="/static/app.css?v=1.4.5">
+<link rel="stylesheet" href="/static/app.css?v=1.4.6">
 </head>
 <body>
 <header class="topbar">
@@ -293,6 +293,7 @@
   <section class="panel settings-panel"><form id="settingsForm">
     <label>Callsign<input name="callsign" id="settingsCallsign" value=""></label><label>Grid square<input name="grid" id="settingsGrid" value=""></label>
     <label>Distance unit<select name="distance_unit" id="settingsUnit"><option value="mi">Miles</option><option value="km">Kilometers</option></select></label>
+    <label class="checkbox" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;margin-bottom:0.25rem;margin-top:0.5rem;"><input type="checkbox" name="audio_auto_start" id="settingsAudioAuto" value="true"> Auto-start live audio waterfall on launch</label>
     <label>Automatic ADIF path<input name="adif_path" id="settingsAdif" placeholder="C:\Users\...\wsjtx_log.adi"></label>
     <label>QRZ.com Logbook API Key<input name="qrz_api_key" id="settingsQrzKey" type="password" placeholder="ABCD-1234-5678-9012"></label>
     <label class="checkbox" style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;margin-bottom:0.25rem;"><input type="checkbox" name="qrz_auto_log" id="settingsQrzAuto" value="true"> Auto-upload logged QSOs to QRZ.com</label>
@@ -336,7 +337,7 @@
 </dialog>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-<script src="/static/app.js?v=1.4.5"></script>
+<script src="/static/app.js?v=1.4.6"></script>
 <dialog id="aboutDialog" class="about-dialog">
   <div class="about-head">
     <div><div class="eyebrow">APPLICATION INFORMATION</div><h2>WSJT-X Operator Console 1.1</h2></div>

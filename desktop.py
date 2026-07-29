@@ -36,5 +36,9 @@ if __name__ == "__main__":
         min_size=(800, 600)
     )
     
+    import os
+    storage_dir = os.path.join(os.getenv('LOCALAPPDATA', ''), 'WSJTX-Operator-Console', 'webview_storage')
+    os.makedirs(storage_dir, exist_ok=True)
+    
     # Start the webview GUI loop
-    webview.start(private_mode=False)
+    webview.start(private_mode=False, storage_path=storage_dir)
