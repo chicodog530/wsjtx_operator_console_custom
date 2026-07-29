@@ -42,4 +42,4 @@ if __name__ == "__main__":
     os.makedirs(storage_dir, exist_ok=True)
     
     # Start the webview GUI loop
-    webview.start(private_mode=False, storage_path=storage_dir)
+    webview.start(debug=True, private_mode=False, storage_path=storage_dir)
