@@ -133,10 +133,18 @@ class DxAssistant:
                     if not call: continue
                     entity = self.dxcc.lookup(call)
                     confirmed = any(record.get(f, "").upper() == "Y" for f in ("QSL_RCVD", "LOTW_QSL_RCVD", "EQSL_QSL_RCVD"))
-                    self.db.execute(
-                        "INSERT INTO qso(call, band, mode, grid, entity_id, confirmed, qso_date, time_on) VALUES (?,?,?,?,?,?,?,?) ON CONFLICT(call, band, mode, qso_date, time_on) DO UPDATE SET grid=excluded.grid, entity_id=excluded.entity_id, confirmed=MAX(qso.confirmed, excluded.confirmed)",
-                        (call, record.get("BAND", ""), record.get("SUBMODE") or record.get("MODE", ""), record.get("GRIDSQUARE", ""), entity.id, int(confirmed), record.get("QSO_DATE", ""), record.get("TIME_ON", ""))
+                    
+                    self.db.upsert_qso(
+                        call=call,
+                        band=record.get("BAND", ""),
+                        mode=record.get("SUBMODE") or record.get("MODE", ""),
+                        grid=record.get("GRIDSQUARE", ""),
+                        entity_id=entity.id,
+                        confirmed=int(confirmed),
+                        qso_date=record.get("QSO_DATE", ""),
+                        time_on=record.get("TIME_ON", "")
                     )
+                    
                     new_recent = [r for r in self.recent if r.get("call") != call]
                     self.recent.clear()
                     self.recent.extend(new_recent)
@@ -815,25 +823,15 @@ class DxAssistant:
                 record.get(field, "").upper() == "Y"
                 for field in ("QSL_RCVD", "LOTW_QSL_RCVD", "EQSL_QSL_RCVD")
             )
-            self.db.execute(
-                """INSERT INTO qso(
-                    call, band, mode, grid, entity_id, confirmed, qso_date, time_on
-                ) VALUES (?,?,?,?,?,?,?,?)
-                ON CONFLICT(call, band, mode, qso_date, time_on)
-                DO UPDATE SET
-                    grid=excluded.grid,
-                    entity_id=excluded.entity_id,
-                    confirmed=MAX(qso.confirmed, excluded.confirmed)""",
-                (
-                    call,
-                    record.get("BAND", ""),
-                    record.get("SUBMODE") or record.get("MODE", ""),
-                    record.get("GRIDSQUARE", ""),
-                    entity.id,
-                    int(confirmed),
-                    record.get("QSO_DATE", ""),
-                    record.get("TIME_ON", ""),
-                ),
+            self.db.upsert_qso(
+                call=call,
+                band=record.get("BAND", ""),
+                mode=record.get("SUBMODE") or record.get("MODE", ""),
+                grid=record.get("GRIDSQUARE", ""),
+                entity_id=entity.id,
+                confirmed=int(confirmed),
+                qso_date=record.get("QSO_DATE", ""),
+                time_on=record.get("TIME_ON", "")
             )
             imported += 1
             confirmed_count += int(confirmed)

@@ -61,6 +61,7 @@ CREATE TABLE IF NOT EXISTS qso (
     UNIQUE(call, band, mode, qso_date, time_on)
 );
 
+CREATE UNIQUE INDEX IF NOT EXISTS idx_qso_unique ON qso(call, band, mode, qso_date, time_on);
 CREATE INDEX IF NOT EXISTS idx_qso_entity_id ON qso(entity_id);
 
 CREATE TABLE IF NOT EXISTS wanted (
@@ -155,6 +156,17 @@ class Database:
             "SELECT 1 FROM qso WHERE entity_id=? AND band=? LIMIT 1",
             (entity_id, band),
         ))
+
+    def upsert_qso(self, call: str, band: str, mode: str, grid: str, entity_id: int, confirmed: int, qso_date: str, time_on: str) -> None:
+        """Safely upsert a QSO without relying on schema-specific ON CONFLICT constraints."""
+        call = call.upper() if call else ""
+        row = self.scalar("SELECT id FROM qso WHERE call=? AND band=? AND mode=? AND qso_date=?", (call, band, mode, qso_date))
+        if row:
+            self.execute("UPDATE qso SET grid=?, entity_id=?, confirmed=MAX(confirmed, ?), time_on=COALESCE(NULLIF(?,''), time_on) WHERE id=?", 
+                         (grid, entity_id, confirmed, time_on, row))
+        else:
+            self.execute("INSERT INTO qso(call, band, mode, grid, entity_id, confirmed, qso_date, time_on) VALUES (?,?,?,?,?,?,?,?)",
+                         (call, band, mode, grid, entity_id, confirmed, qso_date, time_on))
 
 
     def award_breakdown(self) -> dict[str, Any]:
