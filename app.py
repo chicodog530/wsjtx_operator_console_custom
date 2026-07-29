@@ -101,12 +101,12 @@ async def index(request: Request):
 
 
 @app.get("/changelog")
-async def changelog():
+def changelog():
     return FileResponse(ROOT / "CHANGELOG.md", media_type="text/markdown; charset=utf-8")
 
 
 @app.get("/technical-description")
-async def technical_description():
+def technical_description():
     return FileResponse(ROOT / "TECHNICAL_DESCRIPTION.md", media_type="text/markdown; charset=utf-8")
 
 @app.get("/api/status")
@@ -152,7 +152,7 @@ async def add_wanted(
         raise HTTPException(400, "Pattern is required")
     if kind not in {"call", "prefix"}:
         raise HTTPException(400, "Kind must be call or prefix")
-    assistant.db.execute(
+    await asyncio.to_thread(assistant.db.execute,
         "INSERT OR REPLACE INTO wanted(pattern, kind, note) VALUES (?,?,?)",
         (pattern, kind, note.strip()),
     )
@@ -162,7 +162,7 @@ async def add_wanted(
 
 @app.delete("/api/wanted/{pattern}")
 async def delete_wanted(pattern: str):
-    assistant.db.execute("DELETE FROM wanted WHERE pattern=?", (pattern.upper(),))
+    await asyncio.to_thread(assistant.db.execute, "DELETE FROM wanted WHERE pattern=?", (pattern.upper(),))
     await assistant.broadcast()
     return {"ok": True}
 
@@ -172,13 +172,13 @@ async def import_adif(file: UploadFile = File(...)):
     data = await file.read()
     temp = USER_DATA / "_uploaded_log.adi"
     temp.write_bytes(data)
-    result = assistant.import_adif(temp)
+    result = await asyncio.to_thread(assistant.import_adif, temp)
     await assistant.broadcast()
     return result
 
 
 @app.get("/api/history")
-async def history(
+def history(
     limit: int = 500,
     query: str = "",
     band: str = "",
@@ -193,7 +193,7 @@ async def history(
 
 
 @app.get("/api/radar")
-async def radar(minutes: int = 15):
+def radar(minutes: int = 15):
     return {
         "radar": assistant.db.radar(minutes),
         "bands": assistant.db.band_summary(minutes),
@@ -202,12 +202,12 @@ async def radar(minutes: int = 15):
 
 
 @app.get("/api/entity/{entity_id}")
-async def entity_profile(entity_id: int):
+def entity_profile(entity_id: int):
     return assistant.db.entity_profile(entity_id)
 
 
 @app.get("/api/events")
-async def events(limit: int = 100):
+def events(limit: int = 100):
     return assistant.db.query(
         "SELECT * FROM app_events ORDER BY id DESC LIMIT ?",
         (min(max(limit, 1), 500),),
@@ -216,7 +216,7 @@ async def events(limit: int = 100):
 
 
 @app.get("/api/analytics")
-async def analytics():
+def analytics():
     return {
         "awards": assistant.db.award_breakdown(),
         "top_entities": assistant.db.top_entities(50),
@@ -264,7 +264,7 @@ async def save_settings(
 
 
 @app.post("/api/settings/verify_tqsl")
-async def verify_tqsl(path: str = Form("")):
+def verify_tqsl(path: str = Form("")):
     target = Path(path.strip() or r"C:\Program Files (x86)\TrustedQSL\tqsl.exe")
     if target.exists() and target.is_file():
         return {"ok": True, "message": "TQSL executable found!"}
@@ -292,12 +292,12 @@ async def synchronize_time():
 
 
 @app.get("/api/audio/devices")
-async def audio_devices():
+def audio_devices():
     return {"devices": audio.devices(), "status": audio.status.public()}
 
 
 @app.get("/api/audio/status")
-async def audio_status():
+def audio_status():
     return audio.status.public()
 
 
@@ -327,7 +327,7 @@ async def audio_start(
 
 
 @app.post("/api/audio/stop")
-async def audio_stop():
+def audio_stop():
     audio.stop()
     return {"ok": True, "status": audio.status.public()}
 

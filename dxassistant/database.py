@@ -5,6 +5,8 @@ from pathlib import Path
 from threading import RLock
 from typing import Any
 import time
+from collections import deque
+from datetime import datetime, timezone, timedelta
 
 
 SCHEMA = """
@@ -99,6 +101,20 @@ class Database:
                 self.conn.execute("ALTER TABLE qso ADD COLUMN lotw_synced INTEGER NOT NULL DEFAULT 0")
             except sqlite3.OperationalError:
                 pass
+            
+        self._live_stats = {
+            "decodes": self.scalar("SELECT COUNT(*) FROM decodes") or 0,
+            "qsos": self.scalar("SELECT COUNT(*) FROM qso") or 0,
+            "dxcc_worked": self.scalar("SELECT COUNT(DISTINCT entity_id) FROM qso WHERE entity_id IS NOT NULL AND entity_id>0") or 0,
+            "dxcc_confirmed": self.scalar("SELECT COUNT(DISTINCT entity_id) FROM qso WHERE confirmed=1 AND entity_id IS NOT NULL AND entity_id>0") or 0,
+            "wanted": self.scalar("SELECT COUNT(*) FROM wanted") or 0,
+        }
+        
+        # Load the last 15 minutes of decodes into memory for radar
+        recent_rows = self.query(
+            "SELECT entity_id, entity_name, flag, continent, call, snr, distance, priority, heard_at, wanted, worked_entity, needed_on_band FROM decodes WHERE heard_at >= datetime('now', '-15 minutes') AND entity_id IS NOT NULL AND entity_id > 0"
+        )
+        self._live_radar_events = deque(recent_rows, maxlen=2000)
 
     def execute(self, sql: str, params: tuple[Any, ...] = ()) -> sqlite3.Cursor:
         with self.lock, self.conn:
@@ -160,14 +176,30 @@ class Database:
     def upsert_qso(self, call: str, band: str, mode: str, grid: str, entity_id: int, confirmed: int, qso_date: str, time_on: str) -> None:
         """Safely upsert a QSO without relying on schema-specific ON CONFLICT constraints."""
         call = call.upper() if call else ""
-        row = self.scalar("SELECT id FROM qso WHERE call=? AND band=? AND mode=? AND qso_date=?", (call, band, mode, qso_date))
+        row = self.query("SELECT id, confirmed FROM qso WHERE call=? AND band=? AND mode=? AND qso_date=?", (call, band, mode, qso_date))
         if row:
+            r = row[0]
             self.execute("UPDATE qso SET grid=?, entity_id=?, confirmed=MAX(confirmed, ?), time_on=COALESCE(NULLIF(?,''), time_on) WHERE id=?", 
-                         (grid, entity_id, confirmed, time_on, row))
+                         (grid, entity_id, confirmed, time_on, r['id']))
+            if confirmed == 1 and r['confirmed'] == 0:
+                if entity_id and not self.scalar("SELECT 1 FROM qso WHERE entity_id=? AND confirmed=1 AND id!=?", (entity_id, r['id'])):
+                    self._live_stats["dxcc_confirmed"] += 1
         else:
             self.execute("INSERT INTO qso(call, band, mode, grid, entity_id, confirmed, qso_date, time_on) VALUES (?,?,?,?,?,?,?,?)",
                          (call, band, mode, grid, entity_id, confirmed, qso_date, time_on))
+            self._live_stats["qsos"] += 1
+            if entity_id and not self.scalar("SELECT 1 FROM qso WHERE entity_id=? AND id != (SELECT MAX(id) FROM qso)", (entity_id,)):
+                self._live_stats["dxcc_worked"] += 1
+            if entity_id and confirmed == 1 and not self.scalar("SELECT 1 FROM qso WHERE entity_id=? AND confirmed=1 AND id != (SELECT MAX(id) FROM qso)", (entity_id,)):
+                self._live_stats["dxcc_confirmed"] += 1
 
+    def log_decode(self, decode: dict[str, Any]) -> None:
+        columns = ", ".join(decode.keys())
+        placeholders = ", ".join(["?"] * len(decode))
+        self.execute(f"INSERT INTO decodes({columns}) VALUES ({placeholders})", tuple(decode.values()))
+        self._live_stats["decodes"] += 1
+        if decode.get("entity_id"):
+            self._live_radar_events.append(decode)
 
     def award_breakdown(self) -> dict[str, Any]:
         if self._cache_award and time.monotonic() - self._cache_award_time < 5.0:
@@ -240,32 +272,81 @@ class Database:
         )
 
     def radar(self, minutes: int = 15) -> list[dict[str, Any]]:
-        if getattr(self, '_cache_radar', None) and time.monotonic() - getattr(self, '_cache_radar_time', 0) < 3.0:
-            return self._cache_radar
         minutes = max(1, min(minutes, 180))
-        res = self.query(
-            """SELECT entity_id, entity_name, flag, continent,
-                      COUNT(DISTINCT call) AS stations,
-                      COUNT(*) AS decodes,
-                      ROUND(AVG(snr), 1) AS avg_snr,
-                      MAX(snr) AS best_snr,
-                      ROUND(AVG(distance), 0) AS avg_distance,
-                      MAX(priority) AS best_score,
-                      MAX(heard_at) AS last_heard,
-                      MAX(wanted) AS wanted,
-                      MIN(worked_entity) AS has_new_entity,
-                      MAX(needed_on_band) AS needed_on_band
-               FROM decodes
-               WHERE heard_at >= datetime('now', ?)
-                 AND entity_id IS NOT NULL AND entity_id > 0
-               GROUP BY entity_id, entity_name, flag, continent
-               ORDER BY best_score DESC, stations DESC, avg_snr DESC
-               LIMIT 80""",
-            (f"-{minutes} minutes",),
-        )
-        self._cache_radar = res
-        self._cache_radar_time = time.monotonic()
-        return res
+        cutoff = datetime.now(timezone.utc) - timedelta(minutes=minutes)
+        
+        # Aggregate in one pass
+        active_entities: dict[int, dict[str, Any]] = {}
+        
+        for event in self._live_radar_events:
+            try:
+                # Some events have 'heard_at' string, parse it to compare
+                # Format is typically '2023-10-25 12:34:56Z' or similar, but for speed we can do string comparison 
+                # since ISO 8601 strings compare correctly.
+                if hasattr(cutoff, 'strftime'):
+                    cutoff_str = cutoff.strftime("%Y-%m-%d %H:%M:%SZ")
+                else:
+                    cutoff_str = ""
+                    
+                if event["heard_at"] < cutoff_str:
+                    continue
+                
+                eid = event["entity_id"]
+                if eid not in active_entities:
+                    active_entities[eid] = {
+                        "entity_id": eid,
+                        "entity_name": event.get("entity_name", ""),
+                        "flag": event.get("flag", ""),
+                        "continent": event.get("continent", ""),
+                        "calls": set(),
+                        "decodes": 0,
+                        "snr_sum": 0,
+                        "best_snr": -99,
+                        "dist_sum": 0,
+                        "best_score": -99,
+                        "last_heard": "",
+                        "wanted": 0,
+                        "has_new_entity": 1,
+                        "needed_on_band": 0
+                    }
+                
+                ent = active_entities[eid]
+                ent["calls"].add(event["call"])
+                ent["decodes"] += 1
+                ent["snr_sum"] += event["snr"]
+                if event["snr"] > ent["best_snr"]: ent["best_snr"] = event["snr"]
+                if event.get("distance"): ent["dist_sum"] += event["distance"]
+                if event["priority"] > ent["best_score"]: ent["best_score"] = event["priority"]
+                if event["heard_at"] > ent["last_heard"]: ent["last_heard"] = event["heard_at"]
+                if event.get("wanted"): ent["wanted"] = max(ent["wanted"], event["wanted"])
+                if event.get("worked_entity"): ent["has_new_entity"] = 0
+                if event.get("needed_on_band"): ent["needed_on_band"] = max(ent["needed_on_band"], event["needed_on_band"])
+            except Exception:
+                pass
+                
+        self._live_radar_events = kept_events
+        
+        res = []
+        for eid, ent in active_entities.items():
+            res.append({
+                "entity_id": ent["entity_id"],
+                "entity_name": ent["entity_name"],
+                "flag": ent["flag"],
+                "continent": ent["continent"],
+                "stations": len(ent["calls"]),
+                "decodes": ent["decodes"],
+                "avg_snr": round(ent["snr_sum"] / ent["decodes"], 1) if ent["decodes"] else 0,
+                "best_snr": ent["best_snr"],
+                "avg_distance": round(ent["dist_sum"] / ent["decodes"], 0) if ent["decodes"] else 0,
+                "best_score": ent["best_score"],
+                "last_heard": ent["last_heard"],
+                "wanted": ent["wanted"],
+                "has_new_entity": ent["has_new_entity"],
+                "needed_on_band": ent["needed_on_band"]
+            })
+            
+        res.sort(key=lambda x: (x["best_score"], x["stations"], x["avg_snr"]), reverse=True)
+        return res[:80]
 
     def band_summary(self, minutes: int = 15) -> list[dict[str, Any]]:
         minutes = max(1, min(minutes, 180))
@@ -334,19 +415,4 @@ class Database:
         return {"summary": summary[0] if summary else {}, "bands": bands}
 
     def stats(self) -> dict[str, int]:
-        if getattr(self, '_cache_stats', None) and time.monotonic() - getattr(self, '_cache_stats_time', 0) < 3.0:
-            return self._cache_stats
-        res = {
-            "decodes": self.scalar("SELECT COUNT(*) FROM decodes") or 0,
-            "qsos": self.scalar("SELECT COUNT(*) FROM qso") or 0,
-            "dxcc_worked": self.scalar(
-                "SELECT COUNT(DISTINCT entity_id) FROM qso WHERE entity_id IS NOT NULL AND entity_id>0"
-            ) or 0,
-            "dxcc_confirmed": self.scalar(
-                "SELECT COUNT(DISTINCT entity_id) FROM qso WHERE confirmed=1 AND entity_id IS NOT NULL AND entity_id>0"
-            ) or 0,
-            "wanted": self.scalar("SELECT COUNT(*) FROM wanted") or 0,
-        }
-        self._cache_stats = res
-        self._cache_stats_time = time.monotonic()
-        return res
+        return self._live_stats
