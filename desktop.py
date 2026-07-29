@@ -31,15 +31,15 @@ if __name__ == "__main__":
     # Create the native desktop window pointing to our local server
     window = webview.create_window(
         'WSJT-X Operator Console', 
-        f'http://127.0.0.1:{port}',
+        f'http://127.0.0.1:{port}/?v=3',
         width=1200, 
         height=800,
         min_size=(800, 600)
     )
     
     import os
-    storage_dir = os.path.join(os.getenv('LOCALAPPDATA', ''), 'WSJTX-Operator-Console', 'webview_storage')
+    storage_dir = os.path.join(os.getenv('LOCALAPPDATA', ''), 'WSJTX-Operator-Console', 'webview_storage_v2')
     os.makedirs(storage_dir, exist_ok=True)
     
     # Start the webview GUI loop
-    webview.start(private_mode=False, storage_path=storage_dir)
+    webview.start(debug=False, private_mode=False, storage_path=storage_dir)

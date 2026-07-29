@@ -126,9 +126,23 @@ advisorOverride=a;
   drawMap(dashMap,snapshot.recent,dashMarkers,dashPaths,true);drawMap(mainMap,snapshot.recent,mapMarkers,pathLayers,false);
   populateSettings(snapshot.settings);maybeAlert(a);
 
-  if (snapshot.status && snapshot.status.update_available && $("updateBanner")) {
-      $("updateBanner").style.display = "flex";
-      if($("updateBranchName")) $("updateBranchName").textContent = snapshot.status.update_branch || "master";
+  if (snapshot.status) {
+      const banner = $("updateBanner");
+      if (banner) {
+          if (snapshot.status.update_available) {
+              banner.style.display = "flex";
+              banner.style.background = "#3b82f6";
+              banner.style.color = "#ffffff";
+              if($("updateBranchName")) $("updateBranchName").textContent = snapshot.status.update_branch || "master";
+          } else if (snapshot.status.update_error) {
+              banner.style.display = "flex";
+              banner.style.background = "#ef4444";
+              banner.style.color = "#ffffff";
+              if($("updateBranchName")) $("updateBranchName").textContent = "Error: " + snapshot.status.update_error;
+          } else {
+              banner.style.display = "none";
+          }
+      }
   }
 }
 

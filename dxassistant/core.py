@@ -994,13 +994,15 @@ class DxAssistant:
                             remote = remote_out.split()[0]
                             return local != remote, branch
                         return False, branch
-                    except:
-                        return False, ''
+                    except Exception as e:
+                        return False, str(e)
                 update_available, branch = await asyncio.to_thread(_check)
                 if update_available:
                     self.status['update_available'] = True
                     self.status['update_branch'] = branch
-                    await self.broadcast()
+                else:
+                    self.status['update_error'] = branch
+                await self.broadcast()
             except Exception:
                 pass
             await asyncio.sleep(3600)
