@@ -430,14 +430,17 @@ setInterval(() => {
   if(!$('pskRefresh') || !window.lastPskRefresh) return;
   const passed = (Date.now() - window.lastPskRefresh) / 1000;
   const left = 300 - passed; // 5 minute cooldown
+  const countSpan = $('pskCountdown');
   if(left > 0) {
     $('pskRefresh').disabled = true;
     const m = Math.floor(left / 60);
     const s = Math.floor(left % 60).toString().padStart(2, '0');
-    $('pskRefresh').textContent = `Wait ${m}:${s}`;
+    $('pskRefresh').textContent = `Refresh now`;
+    if (countSpan) countSpan.textContent = `Safe to refresh in: ${m}:${s}`;
   } else {
     $('pskRefresh').disabled = false;
     $('pskRefresh').textContent = `Refresh now`;
+    if (countSpan) countSpan.textContent = `Safe to refresh`;
   }
 }, 1000);
 
