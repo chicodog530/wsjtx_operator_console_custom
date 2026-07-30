@@ -39,7 +39,7 @@ class Settings:
     lotw_password: str = ""
     audio_auto_start: bool = False
     database_path: str = "dxassistant.db"
-
+    last_adif_mtime: float = 0.0
 
 class SettingsStore:
     def __init__(self, path: Path) -> None:

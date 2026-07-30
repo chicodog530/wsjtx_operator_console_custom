@@ -71,7 +71,6 @@ class DxAssistant:
         }
         self.recent: deque[dict[str, Any]] = deque(maxlen=200)
         self.best_target: dict[str, Any] | None = None
-        self.last_adif_mtime: float = 0
         self.propagation: deque[tuple[float, str]] = deque(maxlen=1000)
         self.psk_client = PskReporterClient()
         self.psk = {"reports": [], "last_refresh": None, "error": "", "refreshing": False}
@@ -855,8 +854,9 @@ class DxAssistant:
     def import_adif(self, path: Path) -> dict[str, int]:
         imported = 0
         confirmed_count = 0
-        for record in read_adif(path):
-            call = record.get("CALL", "").upper()
+        with self.db.conn:
+            for record in read_adif(path):
+                call = record.get("CALL", "").upper()
             if not call:
                 continue
             entity = self.dxcc.lookup(call)
@@ -974,10 +974,17 @@ class DxAssistant:
             if not path.exists():
                 continue
             mtime = path.stat().st_mtime
-            if mtime <= self.last_adif_mtime:
+            if mtime <= self.settings.last_adif_mtime:
                 continue
-            self.last_adif_mtime = mtime
-            self.import_adif(path)
+            self.settings.last_adif_mtime = mtime
+            self.settings_store.save()
+            
+            self.status["command_status"] = "Importing ADIF logbook... please wait"
+            await self.broadcast()
+            
+            result = await asyncio.to_thread(self.import_adif, path)
+            
+            self.status["command_status"] = f"Imported {result['imported']} ADIF records"
             await self.broadcast()
 
     async def monitor_updates(self) -> None:
